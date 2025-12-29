@@ -3,6 +3,8 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+    width: 100vw;
+    height: 100vh;
 }
 
 .success-order-container-container{
