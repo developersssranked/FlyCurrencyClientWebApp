@@ -12,10 +12,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    margin-top: 120px;
     width: calc(100% - 64px);
     height: 198px;
-    margin-left: 32px;
 }
 
 .success-order-container{
