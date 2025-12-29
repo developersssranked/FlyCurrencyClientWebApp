@@ -5,6 +5,7 @@ function PopupPage() {
     return <div className="popup-page">
         <Header/>
         <Popup/>
+        <Breakline/>
     </div>
 };
 

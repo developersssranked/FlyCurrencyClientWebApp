@@ -5,6 +5,7 @@ import SuccessOrderContainer from "../components/SuccessOrder/SuccessOrderContai
 function SuccessOrder() {
     return <div className="success-order-page">
         <Header/>
+        <Breakline/>
         <Footer/>
         <SuccessOrderContainer/>
     </div>

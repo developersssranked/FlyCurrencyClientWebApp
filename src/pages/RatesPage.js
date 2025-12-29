@@ -41,6 +41,7 @@ function RatesPage({user, rates}) {
             activeDownCurrency={activeDownCurrency} setActiveDownCurrency={setActiveDownCurrency}/>
         }
         <ExchangeSection isFixRate={activeOption === 'calc' ? true : false} dialogId={user?.dialog_id} fiatSum={fiatSum} resultSum={resultSum} finalPercent={finalPercent} finalRate={finalRate} activeUpperCurrency={activeUpperCurrency} activeDownCurrency={activeDownCurrency} rates={rates} user={user}/>
+        <Breakline/>
         <Footer/>
     </div>
 };

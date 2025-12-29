@@ -14,6 +14,7 @@ function ProfilePage({user}){
                 <ReferalLink user={user}/>
                 <LoaltyProgramCard user={user}/>
                 <ExchangeSection dialogId={user?.dialog_id}/>
+                <Breakline/>
                 <Footer/>
             </Fragment>
         ) : (
@@ -21,6 +22,7 @@ function ProfilePage({user}){
                 <Header/>
                 <LoaltyProgramCard user={user}/>
                 <ExchangeSection dialogId={user?.dialog_id}/>
+                <Breakline/>
                 <Footer/>
             </Fragment>
         )}

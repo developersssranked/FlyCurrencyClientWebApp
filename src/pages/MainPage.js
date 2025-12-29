@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import CourcesContainer from "../components/MainPage/CourcesContainer";
 import LoaltyProgramCard from "../components/LoyaltyCard/LoyaltyProgramCard";
 import ExchangeSection from "../components/MainPage/ExchangeSection";
+import Breakline from "../components/Breakline";
 
 import '../css/MainPage/main_page.css'
 
@@ -12,6 +13,7 @@ function MainPage({user, rates}) {
         <CourcesContainer rates={rates}/>
         <LoaltyProgramCard user={user}/>
         <ExchangeSection dialogId={user?.dialog_id}/>
+        <Breakline/>
         <Footer/>
     </div>
 };
