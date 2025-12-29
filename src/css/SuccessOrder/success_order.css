@@ -2,18 +2,28 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+}
+
+.success-order-container-container{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 120px;
+    width: calc(100% - 64px);
+    height: 198px;
+    margin-left: 32px;
 }
 
 .success-order-container{
-    margin-top: 120px;
     background: 
         linear-gradient(rgba(255, 255, 255, 0.43), rgba(255, 255, 255, 0.43)), 
         linear-gradient(360deg, #D4E1F5 0%, #6898DB 100%);
-    width: calc(100% - 64px);
-    height: 198px;
+    width: 100%;
+    height: 100%;
     border-radius: 11px;
     position: relative;
-    justify-self: center;
 }
 
 .success-order-text-t{
