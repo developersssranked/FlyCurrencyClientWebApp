@@ -5,6 +5,7 @@ import CourcesContainer from "../components/MainPage/CourcesContainer";
 import ExchangeSection from "../components/MainPage/ExchangeSection";
 import ToggleSwitchRates from "../components/RatesPage/RatesToggleSwitch";
 import Calculator from "../components/RatesPage/Calculator";
+import Breakline from "../components/Breakline";
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";

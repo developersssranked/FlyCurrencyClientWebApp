@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import ReferalLink from "../components/Profile/ReferalLink";
 import LoaltyProgramCard from "../components/LoyaltyCard/LoyaltyProgramCard";
 import ExchangeSection from "../components/MainPage/ExchangeSection";
-
+import Breakline from "../components/Breakline";
 import { Fragment } from "react/jsx-runtime";
 
 function ProfilePage({user}){
