@@ -388,8 +388,10 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                 </div>
             </div>
         </div>
-        <div className='calculator-arrow-image-container' onClick={handleArrowClick}>
-            <img className='calculator-arrow-image' src={calculatorArrowImage} alt='error'/>
+        <div className='calculator-arrow-image-container-container'>
+            <div className='calculator-arrow-image-container' onClick={handleArrowClick}>
+                <img className='calculator-arrow-image' src={calculatorArrowImage} alt='error'/>
+            </div>
         </div>
         <div className="calculator-upper-section">
             <div className="calculator-dropdown-section" onClick={() => setDownDropdownVisible(!isDownDropdownVisible)}>

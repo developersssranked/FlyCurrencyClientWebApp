@@ -7,7 +7,6 @@
 .referal-link-container{
     background: linear-gradient(93.22deg, rgba(75, 181, 255, 0.7) -60.96%, #0D4FD3 100.01%);
     width: calc(100% - 64px);
-    justify-self: center;
     height: 266px;
     margin-top: 28px;
     box-shadow: 0px 6px 18px 0px #00000040;
@@ -79,7 +78,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    justify-self: center;
+    margin-left: 48px;
 }
 
 .referal-link-text-subitem{
@@ -105,7 +104,7 @@
 .referal-link-additional-text{
     margin-top: 24px;
     width: calc(100% - 64px);
-    justify-self: center;
+    margin-left: 32px;
     font-weight: 500;
     font-size: 12px;
     line-height: 100%;
