@@ -20,7 +20,7 @@ function LoaltyProgramCard({user}) {
                     </Fragment>
                 ) : (
                     <Fragment>
-                        <LoyaltyPossibilities/>
+                        <LoyaltyPossibilities isFlipped={isFlipped}/>
                         <LoyaltyLevels/>
                     </Fragment>
                 )}

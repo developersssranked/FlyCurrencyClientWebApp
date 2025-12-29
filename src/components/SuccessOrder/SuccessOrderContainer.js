@@ -9,7 +9,7 @@ function SuccessOrderContainer(){
             <div className="success-order-image-container">
                 <img className="success-order-image" src={successOrderImage} alt="success-order"/>
             </div>
-            <div className="success-order-button">
+            <div className="success-order-button" onClick={() => window.Telegram.WebApp.openTelegramLink('https://t.me/rateexpert_bot')}>
                 <div className="success-order-button-text">Перейти в чат с менеджером</div>
             </div>
         </div>

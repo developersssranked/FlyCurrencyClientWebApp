@@ -7,12 +7,14 @@ import bonusIcon from '../../img/main_page_loyalty_program_card/bonus.png'
 
 import handImage from '../../img/main_page_loyalty_program_card/hand.png'
 
-function LoyaltyPossibilities() {
+function LoyaltyPossibilities({isFlipped}) {
     return <div className="loyalty__face">
         <div className='loyalty-program-card-title'>Возможности с Rate.pro</div>
-        <div className='loyalty-program-card-hand-image-container'>
-            <img className='loyalty-program-card-hand-image' src={handImage} alt='hand'/>
-        </div>
+        {!isFlipped && 
+            <div className='loyalty-program-card-hand-image-container'>
+                <img className='loyalty-program-card-hand-image' src={handImage} alt='hand'/>
+            </div>
+        }
         <div className='loyalty-program-card-text-section'>
             <div className='loyalty-program-card-text-row'>
                 <div className='loyalty-program-card-text-row-image-container'>
