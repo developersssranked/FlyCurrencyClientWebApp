@@ -15,7 +15,7 @@ function LoaltyProgramCard({user}) {
             <div className="loyalty-program-card-inner">
                 {user && user.loyalty > 0 ? (
                     <Fragment>
-                        <LoyaltyProgressBar user={user}/>
+                        <LoyaltyProgressBar user={user} isFlipped={isFlipped}/>
                         <LoyaltyLevels user={user}/>
                     </Fragment>
                 ) : (

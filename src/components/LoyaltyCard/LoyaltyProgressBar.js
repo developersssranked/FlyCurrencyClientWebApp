@@ -4,7 +4,7 @@ import handImage from '../../img/main_page_loyalty_program_card/hand.png'
 import '../../css/MainPage/loyalty_progress_bar.css'
 import React from "react";
 
-function LoyaltyProgressBar({user}) {
+function LoyaltyProgressBar({user, isFlipped}) {
 
     const textEnum = {
         1: 'STARTER 0,2% от суммы',
@@ -28,9 +28,11 @@ function LoyaltyProgressBar({user}) {
 
 
     return <div className="loyalty__face">
-        <div className='loyalty-program-card-hand-image-container'>
-            <img className='loyalty-program-card-hand-image' src={handImage} alt='hand'/>
-        </div>
+        {!isFlipped && 
+            <div className='loyalty-program-card-hand-image-container'>
+                <img className='loyalty-program-card-hand-image' src={handImage} alt='hand'/>
+            </div>
+        }
         <div className="loyalty-progress-bar-text-section">
             <div className="loyalty-progress-bar-title">Rate.Pro</div>
             <div className="loyalty-progress-bar-text">{textEnum[user.loyalty]}</div>
