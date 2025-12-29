@@ -1,0 +1,25 @@
+.main-page-cources-container{
+    font-family: 'Manrope', sans-serif;
+    width: calc(100% - 64px);
+    background: 
+        linear-gradient(rgba(255, 255, 255, 0.43), rgba(255, 255, 255, 0.43)), 
+        linear-gradient(360deg, #D4E1F5 0%, #6898DB 100%);
+    border-radius: 11px;
+    margin-top: 28px;
+    position: relative;
+    box-sizing: border-box;
+    padding-bottom: 14px;
+    padding-top: 1px;
+    justify-self: center;
+}
+
+.main-page-cources-container-actual-text{
+    margin-top: 28px;
+    margin-left: 28px;
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0%;
+    line-height: 20px;
+}
+

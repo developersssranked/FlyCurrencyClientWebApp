@@ -1,0 +1,51 @@
+.exchange-section{
+    margin-top: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: calc(100% - 140px);
+    justify-self: center;
+}
+
+.exchange-section-title{
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 100%;
+    letter-spacing: 0;
+}
+
+.exchange-section-button{
+    width: 100%;
+    cursor: pointer;
+}
+
+.exchange-section-button{
+    box-shadow: 0px 1px 11.5px 0px #00000040;
+    background: linear-gradient(90deg, #0D5BD6 47.12%, #0B4BC2 62.98%);
+    height: 58px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5px;
+}
+
+.exchange-section-button-image-container{
+    width: 18px;
+    height: 18px;
+}
+
+.exchange-section-button-image{
+    width: 100%;
+    height: 100%;
+}
+
+.exchange-section-button-text{
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 100%;
+    letter-spacing: 0;
+    color: #FFFFFF;
+}

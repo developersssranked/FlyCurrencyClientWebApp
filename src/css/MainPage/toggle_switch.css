@@ -1,0 +1,43 @@
+.toggle-container {
+  position: absolute;
+  top: 28px;
+  right: 27px;
+  display: flex;
+  width: 132px;
+  height: 29px;
+  border-radius: 20px;
+  background-color: #FFFFFFB2;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  overflow: hidden;
+  font-family: 'Monrope', sans-serif;
+}
+
+.toggle-button {
+  flex-grow: 0.35;
+  border: none;
+  background: transparent;
+  color: #6D6A6A;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.toggle-button.active {
+  background: linear-gradient(90deg, #0D5BD6 50.74%, #0B4BC2 66.6%);
+  color: #FFFFFF;
+  border-radius: 20px;
+  flex-grow: 0.65;
+  font-weight: 700;
+}
+
+.toggle-button:not(.active):hover {
+  background-color: #FFFFFFB2;
+  outline: none;
+}

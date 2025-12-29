@@ -1,24 +1,65 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+
+import MainPage from "./pages/MainPage";
+import SuccessOrder from "./pages/SuccessOrder";
+import ProfilePage from "./pages/ProfilePage";
+import RatesPage from "./pages/RatesPage";
+import PopupPage from "./pages/PopupPage";
+
+import { fetchUser, fetchRates } from "./heplers/ApiUtils";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const [user, setUser] = useState(null);
+  const [tgId, setTgId] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setTgId(7140601990)
+  }, [])
+
+  useEffect(() => {
+    if (!tgId) return;
+
+    const loadUser = async () => {
+      try {
+        const user = await fetchUser(tgId);
+        if (user === null) {
+          navigate('/popup')
+        }
+        setUser(user);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadUser();
+  }, [tgId]);
+
+  const [rates, setRates] = useState([]);
+
+  useEffect(() => {
+
+    const loadRates = async () => {
+      try {
+        const rates = await fetchRates();
+        setRates(rates);
+      } catch(err){
+        console.error(err);
+      }
+    }
+
+    loadRates();
+  }, [])
+
+  return ( 
+      <Routes>
+        <Route path='/' element={<MainPage user={user} rates={rates}/>}/>
+        <Route path='/success-order' element={<SuccessOrder/>}/>
+        <Route path='/profile' element={<ProfilePage user={user}/>}/>
+        <Route path='/rates' element={<RatesPage rates={rates} user={user}/>}/>
+        <Route path='/popup' element={<PopupPage/>}/>
+      </Routes>
   );
 }
 
