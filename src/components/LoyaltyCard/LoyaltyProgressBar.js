@@ -46,7 +46,7 @@ function LoyaltyProgressBar({user, isFlipped}) {
                 </div>
                 {user.loyalty !== 3  && (
                     <div className="loyalty-progress-bar-subitem-container">
-                        <div className="loyalty-progress-bar-subitem-text">Осталось:</div>
+                        <div className="loyalty-progress-bar-subitem-text">До следующего уровня:</div>
                         <div className="loyalty-progress-bar-subitem-value">${calcSumLeft()}</div>
                     </div>
                 )}
