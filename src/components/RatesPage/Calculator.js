@@ -410,13 +410,15 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Сумма к получению' disabled value={resultSum}/>
+                <input className='calculator-sum-input' placeholder='Сумма к получению' disabled value={resultSum} style={{color: "#000000"}}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{resultSum !== '' ? activeDownCurrency : ''}</div>
                 </div>
             </div>
         </div>
-        <div className='calculator-cource-row'>{rateRow}</div>
+        <div className='calculator-cource-row-container'>
+            <div className='calculator-cource-row'>{rateRow}</div>
+        </div>
         <div className='calculator-additional-info-container'>
             <div className='calculator-additional-info-image-container'>
                 <img className='calculator-additional-info-image' alt='error' src={additionalInfoImage}/>

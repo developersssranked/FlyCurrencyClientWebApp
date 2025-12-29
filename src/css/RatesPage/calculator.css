@@ -187,3 +187,10 @@
     letter-spacing: 0%;
     color: #6F747C;
 }
+
+.calculator-cource-row-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
