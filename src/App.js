@@ -52,6 +52,11 @@ function App() {
     loadRates();
   }, [])
 
+  useEffect(() => {
+    window?.Telegram?.WebApp.expand()
+  }, [])
+
+
   return ( 
       <Routes>
         <Route path='/' element={<MainPage user={user} rates={rates}/>}/>
