@@ -12,10 +12,10 @@ export const fetchUser = async (tg_id) => {
 
 export const createLead = async (dialog_id, fiatCurrency = null, resultCurrency = null, baseRate = null, resultRate = null, gaveAmount = null, receivedAmount = null, userLoyalty = null, resultPercent = null) => {
     let content;
-    if (fiatCurrency && resultCurrency && baseRate && resultRate && gaveAmount && receivedAmount && userLoyalty && resultPercent){
+    if (fiatCurrency && resultCurrency && baseRate && resultRate && gaveAmount && receivedAmount && resultPercent){
         content = `Новая заявка из клиентского мини апп\n\n
                     Меняем: ${fiatCurrency} на ${resultCurrency}\n
-                    Уровень лояльности пользователя: ${userLoyalty}\n
+                    Уровень лояльности пользователя: ${userLoyalty || 0}\n
                     Итоговый процент: ${resultPercent}\n
                     Базовый курс: ${baseRate}\n
                     Итоговый Курс: ${resultRate}\n
