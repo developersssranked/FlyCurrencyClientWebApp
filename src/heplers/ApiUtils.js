@@ -31,9 +31,9 @@ export const createLead = async (dialog_id, fiatCurrency = null, resultCurrency 
             },
             from_currency: fiatCurrency,
             to_currency: resultCurrency,
-            input_sum: gaveAmount,
-            rate: resultRate,
-            result_sum: receivedAmount
+            input_sum: String(gaveAmount),
+            rate: String(resultRate),
+            result_sum: String(receivedAmount)
         }
         }
     else {
