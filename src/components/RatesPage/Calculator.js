@@ -56,11 +56,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         {
             title: 'EUR',
             image: eurImage
-        },
-        {
-            title: 'UAH',
-            image: uahImage
-        },
+        }
     ]
 
     const currencyPairsImageDict = {
@@ -81,7 +77,6 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         'VND': ['THB', 'RUB', 'USDT'],
         'USD': ['THB', 'VND', 'USDT'],
         'EUR': ['THB',],
-        'UAH': ['THB', 'USDT'],
     }
 
     const [upperDropdownOptions, setUpperDropdownOptions] = useState(defaultDropdownOptions);
@@ -104,7 +99,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
 
 
     const handleArrowClick = () => {
-        if (activeDownCurrency !== 'KZT'){
+        if (activeDownCurrency !== 'KZT' && activeDownCurrency !== 'UAH'){
             setActiveUpperCurrency(activeDownCurrency);
             setActiveDownCurrency(activeUpperCurrency);
         }
