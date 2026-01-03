@@ -16,7 +16,7 @@ export const createLead = async (dialog_id, fiatCurrency = null, resultCurrency 
         content = `Новая заявка из клиентского мини апп\n\n
                     Меняем: ${fiatCurrency} на ${resultCurrency}\n
                     Уровень лояльности пользователя: ${userLoyalty || 0}\n
-                    Итоговый процент: ${resultPercent}\n
+                    Итоговый процент: ${resultPercent.toFixed(3)}\n
                     Базовый курс: ${baseRate}\n
                     Итоговый Курс: ${resultRate}\n
                     Отдает: ${gaveAmount} ${fiatCurrency}\n
