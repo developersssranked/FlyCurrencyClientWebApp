@@ -23,3 +23,16 @@
     line-height: 20px;
 }
 
+
+.main-page-cources-grow-up-image-container{
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    top: 8px;
+    right: 8px;
+}
+
+.main-page-cources-grow-up-image{
+    width: 100%;
+    height: 100%;
+}
