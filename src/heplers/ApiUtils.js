@@ -12,6 +12,7 @@ export const fetchUser = async (tg_id) => {
 
 export const createLead = async (dialog_id, fiatCurrency = null, resultCurrency = null, baseRate = null, resultRate = null, gaveAmount = null, receivedAmount = null, userLoyalty = null, resultPercent = null) => {
     let content;
+    let data;
     if (fiatCurrency && resultCurrency && baseRate && resultRate && gaveAmount && receivedAmount && resultPercent){
         content = `Новая заявка из клиентского мини апп\n\n
                     Меняем: ${fiatCurrency} на ${resultCurrency}\n
@@ -21,24 +22,41 @@ export const createLead = async (dialog_id, fiatCurrency = null, resultCurrency 
                     Итоговый Курс: ${resultRate}\n
                     Отдает: ${gaveAmount} ${fiatCurrency}\n
                     Получает: ${receivedAmount} ${resultCurrency}`
-    }
+           
+        data = {
+            message: {
+                dialog_id: dialog_id,
+                sender_type: "client",
+                content: content
+            },
+            from_currency: fiatCurrency,
+            to_currency: resultCurrency,
+            input_sum: gaveAmount,
+            rate: resultRate,
+            result_sum: receivedAmount
+        }
+        }
     else {
         content = 'Новая заявка из клиентского мини апп'
+        data = {
+        message: {
+            dialog_id: dialog_id,
+            sender_type: "client",
+            content: content
+        },
+        }
     }
     
-    const data = {
-        dialog_id: dialog_id,
-        sender_type: "client",
-        content: content
-    }
 
-    await fetch(process.env.REACT_APP_API_URL + '/api/v1/conversations/messages', {
+    await fetch(process.env.REACT_APP_API_URL + '/api/v1/conversations/leads', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
     });
+
+
 }
 
 export const fetchRates = async () => {
