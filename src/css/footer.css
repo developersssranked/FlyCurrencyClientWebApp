@@ -27,6 +27,7 @@
     flex-direction: column;
     align-items: center;
     gap: 5px;
+    cursor: pointer;
 }
 
 .footer-item-image-container{

@@ -367,7 +367,9 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                 </div>
                 <div className='calculator-dropdown-section-active-currency-title'>{activeUpperCurrency}</div>
                 <div className='calculator-dropdown-section-arrow-image-container'>
-                    <img className='calculator-dropdown-section-arrow-image' src={arrowImage} alt='arrow'/>
+                    <img className={`calculator-dropdown-section-arrow-image ${
+                    isUpperDropdownVisible ? 'rotated' : ''
+                    }`} src={arrowImage} alt='arrow'/>
                 </div>
                 {isUpperDropdownVisible && <CalculatorDropdown 
                                             ref={upperDropdownRef}
@@ -395,7 +397,9 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                 </div>
                 <div className='calculator-dropdown-section-active-currency-title'>{activeDownCurrency}</div>
                 <div className='calculator-dropdown-section-arrow-image-container'>
-                    <img className='calculator-dropdown-section-arrow-image' src={arrowImage} alt='arrow'/>
+                    <img className={`calculator-dropdown-section-arrow-image ${
+                        isDownDropdownVisible ? 'rotated' : ''
+                    }`} src={arrowImage} alt='arrow'/>
                 </div>
                 {isDownDropdownVisible && <CalculatorDropdown 
                                             ref={downDropdownRef}
