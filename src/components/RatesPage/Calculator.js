@@ -21,7 +21,7 @@ import additionalInfoImage from '../../img/additional_info.png'
 
 import '../../css/RatesPage/calculator.css'
 
-function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency}) {
+function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency, setInputActive}) {
 
     const upperDropdownRef = useRef(null);
     const upperDropdownTriggerRef = useRef(null);
@@ -121,11 +121,21 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
     const prevResultSumRef = useRef(resultSum);
 
 
+    const MIN_AMOUNTS = {
+        RUB: 10000,
+        USDT: 1000,
+        THB: 3000,
+        VND: 2715000,
+        USD: 1000,
+        EUR: 1000,
+        UAH: 10000,
+        KZT: 50000
+        };
+
     useEffect(() => {
         const from = activeUpperCurrency;
         const to = activeDownCurrency;
 
-        // 🧹 Если fiatSum пустой — сбрасываем ВСЁ
         if (fiatSum === '' || from === to || !rates) {
             if (fiatSum === '') {
             setResultSum('');
@@ -138,7 +148,6 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             return;
         }
 
-        // 🛑 Защита от зацикливания
         if (fiatSum === prevFiatSumRef.current) {
             return;
         }
@@ -147,6 +156,15 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         if (isNaN(parsed) || parsed <= 0) {
             setResultSum('');
             setRateRow('');
+            return;
+        }
+
+        const minAmount = MIN_AMOUNTS[from] ?? 0;
+        if (parsed < minAmount) {
+            setResultSum('');
+            setRateRow('');
+            setFinalRate(0);
+            setFinalPercent(0);
             return;
         }
 
@@ -160,13 +178,11 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         prevFiatSumRef.current = fiatSum;
         prevResultSumRef.current = String(calc.convertedAmount);
         }, [fiatSum, activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
-
     
     useEffect(() => {
         const from = activeUpperCurrency;
         const to = activeDownCurrency;
 
-        // 🧹 Если resultSum пустой — сбрасываем ВСЁ
         if (resultSum === '' || from === to || !rates) {
             if (resultSum === '') {
             setFiatSum('');
@@ -179,15 +195,21 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             return;
         }
 
-        // 🛑 Защита от зацикливания
-        if (resultSum === prevResultSumRef.current) {
-            return;
-        }
+        if (resultSum === prevResultSumRef.current) return;
 
         const parsed = parseFloat(resultSum);
         if (isNaN(parsed) || parsed <= 0) {
             setFiatSum('');
             setRateRow('');
+            return;
+        }
+
+        const minAmount = MIN_AMOUNTS[to] ?? 0;
+        if (parsed < minAmount) {
+            setFiatSum('');
+            setRateRow('');
+            setFinalRate(0);
+            setFinalPercent(0);
             return;
         }
 
@@ -201,6 +223,79 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         prevFiatSumRef.current = String(calc.convertedAmount);
         prevResultSumRef.current = resultSum;
         }, [resultSum, activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
+
+    // Пересчёт при смене валют
+        useEffect(() => {
+        const from = activeUpperCurrency;
+        const to = activeDownCurrency;
+
+        // Защита: нельзя конвертировать в ту же валюту или без курсов
+        if (from === to || !rates) {
+            setFiatSum('');
+            setResultSum('');
+            setRateRow('');
+            setFinalRate(0);
+            setFinalPercent(0);
+            return;
+        }
+
+        // 1️⃣ Если есть значение в верхнем инпуте — пересчитываем вниз
+        if (fiatSum !== '') {
+            const parsed = parseFloat(fiatSum);
+            if (!isNaN(parsed) && parsed > 0) {
+            // Проверим минимум для верхней валюты
+            const minAmount = MIN_AMOUNTS[from] ?? 0;
+            if (parsed >= minAmount) {
+                const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'from' });
+                setResultSum(String(calc.convertedAmount));
+                setFinalRate(calc.finalRate);
+                setFinalPercent(calc.finalPercent);
+                setRateRow(calc.rateDisplay);
+            } else {
+                // Сумма меньше минимума → сбрасываем нижний инпут
+                setResultSum('');
+                setRateRow('');
+                setFinalRate(0);
+                setFinalPercent(0);
+            }
+            } else {
+            setResultSum('');
+            setRateRow('');
+            }
+            return;
+        }
+
+        // 2️⃣ Если верхний пуст, но есть значение в нижнем — пересчитываем вверх
+        if (resultSum !== '') {
+            const parsed = parseFloat(resultSum);
+            if (!isNaN(parsed) && parsed > 0) {
+            // Проверим минимум для нижней валюты
+            const minAmount = MIN_AMOUNTS[to] ?? 0;
+            if (parsed >= minAmount) {
+                const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'to' });
+                setFiatSum(String(calc.convertedAmount));
+                setFinalRate(calc.finalRate);
+                setFinalPercent(calc.finalPercent);
+                setRateRow(calc.rateDisplay);
+            } else {
+                // Сумма меньше минимума → сбрасываем верхний инпут
+                setFiatSum('');
+                setRateRow('');
+                setFinalRate(0);
+                setFinalPercent(0);
+            }
+            } else {
+            setFiatSum('');
+            setRateRow('');
+            }
+            return;
+        }
+
+        // 3️⃣ Если оба пусты — просто очищаем мета-поля
+        setRateRow('');
+        setFinalRate(0);
+        setFinalPercent(0);
+        }, [activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
 
 
     return <div className="calculator-container">
@@ -224,7 +319,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Введите сумму' type="number" value={fiatSum} onChange={(e) => setFiatSum(e.target.value)}/>
+                <input className='calculator-sum-input' placeholder='Введите сумму' type="number" value={fiatSum} onChange={(e) => setFiatSum(e.target.value)} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{fiatSum !== '' ? activeUpperCurrency : ''}</div>
                 </div>
@@ -238,7 +333,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         <div className="calculator-upper-section">
             <div className="calculator-dropdown-section" onClick={() => setDownDropdownVisible(prev => !prev)} ref={downDropdownTriggerRef}>
                 <div className="calculator-dropdown-section-currency-image-container">
-                    <img className="calculator-dropdown-section-currency-image" src={currencyPairsImageDict[activeDownCurrency]} alt={activeDownCurrency}/>
+                    <img className="calculator-dropdown-section-currency-image" src={currencyPairsImageDict[activeDownCurrency]} alt={activeDownCurrency} />
                 </div>
                 <div className='calculator-dropdown-section-active-currency-title'>{activeDownCurrency}</div>
                 <div className='calculator-dropdown-section-arrow-image-container'>
@@ -254,7 +349,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={(e) => setResultSum(e.target.value)}/>
+                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={(e) => setResultSum(e.target.value)} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{resultSum !== '' ? activeDownCurrency : ''}</div>
                 </div>

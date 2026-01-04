@@ -2,10 +2,9 @@ export const getPercentBySum = ({activeUpperCurrency, activeDownCurrency, rates,
     let percentBySum;
     const currencyPair = `${activeUpperCurrency.toLowerCase()}_${activeDownCurrency.toLowerCase()}`
 
-    if (['rub_uah', 'usdt_uah', 'usdt_usd', 'usdt_eur', 'thb_usd', 'thb_kzt', 'thb_eur', 'vnd_rub', 'vnd_thb', 'vnd_uah', 'usd_thb', 'usd_vnd', 'usd_usdt', 'eur_thb', 'eur_usdt', 'uah_thb', 'uah_usdt'].includes(currencyPair)){
+    if (['rub_uah', 'usdt_uah', 'usdt_eur', 'thb_usd', 'thb_kzt', 'thb_eur', 'vnd_rub', 'vnd_thb', 'vnd_uah', 'usd_thb', 'usd_vnd', 'usd_usdt', 'eur_thb', 'eur_usdt', 'uah_thb', 'uah_usdt'].includes(currencyPair)){
         const currencyStaticPercentMapping = {
             'usdt_uah': 4,
-            'usdt_usd': 2,
             'usdt_eur': 2,
             'thb_usd': 2,
             'thb_kzt': 4,
@@ -234,6 +233,29 @@ export const getPercentBySum = ({activeUpperCurrency, activeDownCurrency, rates,
             percentBySum = 2.5
         }
     }
+
+    else if (currencyPair === 'usdt_usd'){
+        let usdtSum;
+        if (direction === 'from') {
+            usdtSum = parsedFiatSum;
+        }
+        else {
+            usdtSum = parsedFiatSum / rates.usdt_usd
+        }
+        if (usdtSum <= 2000){
+            percentBySum = 4
+        }
+        else if (2000 < usdtSum && usdtSum <= 3000){
+            percentBySum = 3
+        }
+        else if (3000 < usdtSum && usdtSum <= 10000){
+            percentBySum = 2
+        }
+        else if (10000 < usdtSum){
+            percentBySum = 1.5
+        }
+    }
+
     else if (currencyPair === 'usdt_rub'){
         let rubSum;
         if (direction === 'from') {

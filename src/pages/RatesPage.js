@@ -7,7 +7,7 @@ import ToggleSwitchRates from "../components/RatesPage/RatesToggleSwitch";
 import Calculator from "../components/RatesPage/Calculator";
 import Breakline from "../components/Breakline";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useSearchParams } from "react-router-dom";
 
 function RatesPage({user, rates}) {
@@ -25,6 +25,7 @@ function RatesPage({user, rates}) {
     const [resultSum, setResultSum] = useState('');
     const [finalPercent, setFinalPercent] = useState(null);
     const [finalRate, setFinalRate] = useState(null);
+    const [isInputActive, setInputActive] = useState(false);
 
     const [activeUpperCurrency, setActiveUpperCurrency] = useState(searchParams.get('from_currency') ||'RUB');
     const [activeDownCurrency, setActiveDownCurrency] = useState(searchParams.get('to_currency') || 'THB');
@@ -47,11 +48,15 @@ function RatesPage({user, rates}) {
             finalPercent={finalPercent} setFinalPercent={setFinalPercent}
             finalRate={finalRate} setFinalRate={setFinalRate}
             activeUpperCurrency={activeUpperCurrency} setActiveUpperCurrency={setActiveUpperCurrency}
-            activeDownCurrency={activeDownCurrency} setActiveDownCurrency={setActiveDownCurrency}/>
+            activeDownCurrency={activeDownCurrency} setActiveDownCurrency={setActiveDownCurrency} setInputActive={setInputActive}/>
         }
         <ExchangeSection isFixRate={activeOption === 'calc' ? true : false} dialogId={user?.dialog_id} fiatSum={fiatSum} resultSum={resultSum} finalPercent={finalPercent} finalRate={finalRate} activeUpperCurrency={activeUpperCurrency} activeDownCurrency={activeDownCurrency} rates={rates} user={user}/>
-        <Breakline/>
-        <Footer/>
+        {!isInputActive && 
+            <Fragment>
+                <Breakline/>
+                <Footer/>
+            </Fragment>
+        }
     </div>
 };
 
