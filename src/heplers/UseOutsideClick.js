@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 
-export function useOutsideClick(
-  ref,
-  handler
-) {
+export function useOutsideClick(refs, handler) {
   useEffect(() => {
     const handleClick = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+      // Проверяем, находится ли клик внутри ЛЮБОГО из переданных ref'ов
+      const isInsideAny = Array.isArray(refs)
+        ? refs.some(ref => ref.current && ref.current.contains(event.target))
+        : refs.current && refs.current.contains(event.target);
+
+      if (!isInsideAny) {
         handler(event);
       }
     };
@@ -18,5 +20,5 @@ export function useOutsideClick(
       document.removeEventListener('mousedown', handleClick);
       document.removeEventListener('touchstart', handleClick);
     };
-  }, [ref, handler]);
+  }, [refs, handler]);
 }

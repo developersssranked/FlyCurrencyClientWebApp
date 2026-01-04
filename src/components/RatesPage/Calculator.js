@@ -21,10 +21,12 @@ import additionalInfoImage from '../../img/additional_info.png'
 import '../../css/RatesPage/calculator.css'
 
 function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency}) {
-    const [searchParams] = useSearchParams();
 
     const upperDropdownRef = useRef(null);
+    const upperDropdownTriggerRef = useRef(null);
+
     const downDropdownRef = useRef(null);
+    const downDropdownTriggerRef = useRef(null);
  
     const [rateRow, setRateRow] = useState('');
 
@@ -105,11 +107,11 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         }
     }; 
 
-    useOutsideClick(upperDropdownRef, () => {
+    useOutsideClick([upperDropdownTriggerRef, upperDropdownRef], () => {
         setUpperDropdownVisible(false);
     });
 
-    useOutsideClick(downDropdownRef, () => {
+    useOutsideClick([downDropdownTriggerRef, downDropdownRef], () => {
         setDownDropdownVisible(false);
     });
 
@@ -248,13 +250,67 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         else if (currencyPair === 'usdt_thb') {
             const resultThbSum = parsedFiatSum * rates.usdt_thb;
             if (resultThbSum <= 5000){
+                percentBySum = 6
+            }
+            else if (5000 < resultThbSum && resultThbSum <= 5500){
+                percentBySum = 5.8
+            }
+            else if (5500 < resultThbSum && resultThbSum <= 6000){
+                percentBySum = 5.6
+            }
+            else if (6000 < resultThbSum && resultThbSum <= 6500){
+                percentBySum = 5.4
+            }
+            else if (6500 < resultThbSum && resultThbSum <= 7000){
+                percentBySum = 5.2
+            }
+            else if (7000 < resultThbSum && resultThbSum <= 7500){
                 percentBySum = 5
             }
-            else if (5000 < resultThbSum && resultThbSum <= 100000){
-                percentBySum = 3
+            else if (7500 < resultThbSum && resultThbSum <= 8000){
+                percentBySum = 4.8
             }
-            else if (100000 < resultThbSum){
-                percentBySum = 2
+            else if (8000 < resultThbSum && resultThbSum <= 8500){
+                percentBySum = 4.6
+            }
+            else if (8500 < resultThbSum && resultThbSum <= 9000){
+                percentBySum = 4.4
+            }
+            else if (9000 < resultThbSum && resultThbSum <= 9500){
+                percentBySum = 4.2
+            }
+            else if (9500 < resultThbSum && resultThbSum <= 15000){
+                percentBySum = 3.8
+            }
+            else if (15000 < resultThbSum && resultThbSum <= 25000){
+                percentBySum = 3.6
+            }
+            else if (25000 < resultThbSum && resultThbSum <= 35000){
+                percentBySum = 3.2
+            }
+            else if (35000 < resultThbSum && resultThbSum <= 50000){
+                percentBySum = 2.8
+            }
+            else if (50000 < resultThbSum && resultThbSum <= 65000){
+                percentBySum = 2.6
+            }
+            else if (65000 < resultThbSum && resultThbSum <= 85000){
+                percentBySum = 2.4
+            }
+            else if (85000 < resultThbSum && resultThbSum <= 95000){
+                percentBySum = 2.2
+            }
+            else if (95000 < resultThbSum && resultThbSum <= 150000){
+                percentBySum = 1.9
+            }
+            else if (150000 < resultThbSum && resultThbSum <= 200000){
+                percentBySum = 1.8
+            }
+            else if (200000 < resultThbSum && resultThbSum <= 250000){
+                percentBySum = 1.7
+            }
+            else if (250000 < resultThbSum){
+                percentBySum = 1.6
             }
         }
         else if (currencyPair === 'usdt_vnd'){
@@ -361,7 +417,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
     return <div className="calculator-container">
         <div className='calculator-inputs-container'>
         <div className="calculator-upper-section">
-            <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(!isUpperDropdownVisible)}>
+            <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(prev => !prev)} ref={upperDropdownTriggerRef}>
                 <div className="calculator-dropdown-section-currency-image-container">
                     <img className="calculator-dropdown-section-currency-image" src={currencyPairsImageDict[activeUpperCurrency]} alt={activeUpperCurrency}/>
                 </div>
@@ -391,7 +447,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             </div>
         </div>
         <div className="calculator-upper-section">
-            <div className="calculator-dropdown-section" onClick={() => setDownDropdownVisible(!isDownDropdownVisible)}>
+            <div className="calculator-dropdown-section" onClick={() => setDownDropdownVisible(prev => !prev)} ref={downDropdownTriggerRef}>
                 <div className="calculator-dropdown-section-currency-image-container">
                     <img className="calculator-dropdown-section-currency-image" src={currencyPairsImageDict[activeDownCurrency]} alt={activeDownCurrency}/>
                 </div>

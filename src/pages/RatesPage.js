@@ -29,6 +29,14 @@ function RatesPage({user, rates}) {
     const [activeUpperCurrency, setActiveUpperCurrency] = useState(searchParams.get('from_currency') ||'RUB');
     const [activeDownCurrency, setActiveDownCurrency] = useState(searchParams.get('to_currency') || 'THB');
 
+    useEffect(() => {
+        const from = searchParams.get('from_currency') || 'RUB';
+        const to = searchParams.get('to_currency') || 'THB';
+
+        setActiveUpperCurrency(prev => prev !== from ? from : prev);
+        setActiveDownCurrency(prev => prev !== to ? to : prev);
+    }, [searchParams]);
+
     return <div className="rates-page">
         <Header/>
         <ToggleSwitchRates activeOption={activeOption} setActiveOption={setActiveOption}/>

@@ -8,13 +8,15 @@ function CourcesRow({image, alt, title, courceBuy, courceSell, activeOption, set
     const navigate = useNavigate();
     const { pathname, search } = useLocation();
     const handleRowClick = () => {
-        const urlToNavigate = `/rates?page=calc&from_currency=${title}&to_currency=${activeOption}`
-        const pathWithQuery = pathname + search;
-        if ((pathWithQuery === urlToNavigate) && setPageActiveOption){
-            setPageActiveOption('calc')
-        }
-        else {
-            navigate(urlToNavigate)
+        if (title !== 'KZT' && title !== 'UAH') {
+            const urlToNavigate = `/rates?page=calc&from_currency=${title}&to_currency=${activeOption}`
+            const pathWithQuery = pathname + search;
+            if ((pathWithQuery === urlToNavigate) && setPageActiveOption){
+                setPageActiveOption('calc')
+            }
+            else {
+                navigate(urlToNavigate)
+            }
         }
     }
 
