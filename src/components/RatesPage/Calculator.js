@@ -1,5 +1,5 @@
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom';
 
 import CalculatorDropdown from './CalculatorDropdown'
@@ -33,6 +33,8 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
 
     const [isUpperDropdownVisible, setUpperDropdownVisible] = useState(false);
     const [isDownDropdownVisible, setDownDropdownVisible] = useState(false);
+
+    const [isFiatSumBelowMin, setIsFiatSumBelowMin] = useState(false);
 
 
     const defaultDropdownOptions = [
@@ -120,34 +122,42 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
     const prevFiatSumRef = useRef(fiatSum);
     const prevResultSumRef = useRef(resultSum);
 
-
-    const MIN_AMOUNTS = {
-        RUB: 10000,
-        USDT: 1000,
-        THB: 3000,
-        VND: 2715000,
-        USD: 1000,
-        EUR: 1000,
-        UAH: 10000,
-        KZT: 50000
+    const getMinAmount = useCallback((from, to) => {
+        if (from === 'USDT' && to === 'USD') {
+            return 1000;
+        }
+        const defaults = {
+            RUB: 10000,
+            USDT: 1,
+            THB: 3000,
+            VND: 2715000,
+            USD: 1,
+            EUR: 1,
+            UAH: 1,
+            KZT: 1
         };
+        return defaults[from] ?? 10;
+        }, []);
 
     useEffect(() => {
         const from = activeUpperCurrency;
         const to = activeDownCurrency;
 
+        // 🧹 Полная очистка при пустом верхнем инпуте или некорректных условиях
         if (fiatSum === '' || from === to || !rates) {
             if (fiatSum === '') {
             setResultSum('');
             setRateRow('');
             setFinalRate(0);
             setFinalPercent(0);
+            setIsFiatSumBelowMin(false);
             }
             prevFiatSumRef.current = fiatSum;
             prevResultSumRef.current = '';
             return;
         }
 
+        // 🛑 Защита от зацикливания: если значение не изменилось — выходим
         if (fiatSum === prevFiatSumRef.current) {
             return;
         }
@@ -156,24 +166,31 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         if (isNaN(parsed) || parsed <= 0) {
             setResultSum('');
             setRateRow('');
+            setIsFiatSumBelowMin(false);
+            prevFiatSumRef.current = fiatSum;
             return;
         }
 
-        const minAmount = MIN_AMOUNTS[from] ?? 0;
+        const minAmount = getMinAmount(from, to);
+
         if (parsed < minAmount) {
             setResultSum('');
-            setRateRow('');
+            setRateRow(`Min: ${minAmount} ${from}`);
+            setIsFiatSumBelowMin(true);
             setFinalRate(0);
             setFinalPercent(0);
+            prevFiatSumRef.current = fiatSum; // ✅ обновляем ref — иначе следующее изменение не сработает
             return;
         }
 
+        // ✅ Расчёт
         const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'from' });
 
         setResultSum(String(calc.convertedAmount));
         setFinalRate(calc.finalRate);
         setFinalPercent(calc.finalPercent);
         setRateRow(calc.rateDisplay);
+        setIsFiatSumBelowMin(false);
 
         prevFiatSumRef.current = fiatSum;
         prevResultSumRef.current = String(calc.convertedAmount);
@@ -189,43 +206,67 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             setRateRow('');
             setFinalRate(0);
             setFinalPercent(0);
+            setIsFiatSumBelowMin(false);
             }
             prevResultSumRef.current = resultSum;
             prevFiatSumRef.current = '';
             return;
         }
 
-        if (resultSum === prevResultSumRef.current) return;
+        // 🛑 Защита от зацикливания: выход, если значение не менялось
+        if (resultSum === prevResultSumRef.current) {
+            return;
+        }
 
         const parsed = parseFloat(resultSum);
         if (isNaN(parsed) || parsed <= 0) {
             setFiatSum('');
             setRateRow('');
+            setIsFiatSumBelowMin(false);
+            prevResultSumRef.current = resultSum; // ✅ обновляем ref
             return;
         }
 
-        const minAmount = MIN_AMOUNTS[to] ?? 0;
-        if (parsed < minAmount) {
-            setFiatSum('');
-            setRateRow('');
+        // 🔁 Пробуем расчёт
+        const calc = calculateExchange({
+            amount: parsed,
+            from,
+            to,
+            rates,
+            user,
+            direction: 'to'
+        });
+
+        const fiatValue = calc.convertedAmount;
+        const minAmount = getMinAmount(from, to);
+
+        // ✅ Главное: ОБНОВЛЯЕМ ССЫЛКИ ДО ЛЮБОГО return
+        prevResultSumRef.current = resultSum;
+        prevFiatSumRef.current = String(fiatValue); // ← синхронизируем ДО проверки
+
+        if (fiatValue < minAmount) {
+            // Сохраняем числа, но показываем ошибку
+            setFiatSum(String(fiatValue)); // ← не ''
+            // НЕ вызываем setResultSum — он и так = resultSum
+            setRateRow(`Min: ${minAmount} ${from}`);
+            setIsFiatSumBelowMin(true);
             setFinalRate(0);
             setFinalPercent(0);
             return;
         }
 
-        const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'to' });
-
-        setFiatSum(String(calc.convertedAmount));
+        // ✅ Всё ок
+        setFiatSum(String(fiatValue));
         setFinalRate(calc.finalRate);
         setFinalPercent(calc.finalPercent);
         setRateRow(calc.rateDisplay);
-
-        prevFiatSumRef.current = String(calc.convertedAmount);
-        prevResultSumRef.current = resultSum;
+        setIsFiatSumBelowMin(false);
+        // prev*Ref уже обновлены выше
         }, [resultSum, activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
-
-    // Пересчёт при смене валют
-        useEffect(() => {
+    
+    
+        // Пересчёт при смене валют
+    useEffect(() => {
         const from = activeUpperCurrency;
         const to = activeDownCurrency;
 
@@ -244,7 +285,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             const parsed = parseFloat(fiatSum);
             if (!isNaN(parsed) && parsed > 0) {
             // Проверим минимум для верхней валюты
-            const minAmount = MIN_AMOUNTS[from] ?? 0;
+            const minAmount = getMinAmount(from, to)
             if (parsed >= minAmount) {
                 const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'from' });
                 setResultSum(String(calc.convertedAmount));
@@ -270,7 +311,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             const parsed = parseFloat(resultSum);
             if (!isNaN(parsed) && parsed > 0) {
             // Проверим минимум для нижней валюты
-            const minAmount = MIN_AMOUNTS[to] ?? 0;
+            const minAmount = getMinAmount(from, to)
             if (parsed >= minAmount) {
                 const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'to' });
                 setFiatSum(String(calc.convertedAmount));
@@ -319,7 +360,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Введите сумму' type="number" value={fiatSum} onChange={(e) => setFiatSum(e.target.value)} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)}/>
+                <input className='calculator-sum-input' placeholder='Введите сумму' type="number" value={fiatSum} onChange={(e) => setFiatSum(e.target.value)} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{fiatSum !== '' ? activeUpperCurrency : ''}</div>
                 </div>
@@ -356,7 +397,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             </div>
         </div>
         <div className='calculator-cource-row-container'>
-            <div className='calculator-cource-row'>{rateRow}</div>
+            <div className='calculator-cource-row' style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}>{rateRow}</div>
         </div>
         <div className='calculator-additional-info-container'>
             <div className='calculator-additional-info-image-container'>
