@@ -136,7 +136,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             UAH: 1,
             KZT: 1
         };
-        return defaults[from] ?? 10;
+        return defaults[from] ?? 1;
         }, []);
 
     useEffect(() => {
