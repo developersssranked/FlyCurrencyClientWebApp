@@ -15,8 +15,7 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // const tgIdToSet = window.Telegram.WebApp.initDataUnsafe.user.id
-    const tgIdToSet = 7140601990;
+    const tgIdToSet = window.Telegram.WebApp.initDataUnsafe.user.id
     setTgId(tgIdToSet)
   }, [])
 
