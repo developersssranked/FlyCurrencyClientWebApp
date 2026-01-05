@@ -40,7 +40,8 @@ function RatesPage({user, rates}) {
 
     return <div className="rates-page">
         <Header/>
-        <ToggleSwitchRates activeOption={activeOption} setActiveOption={setActiveOption}/>
+        {(!isInputActive && ['android', 'ios'].includes(window.Telegram.WebApp.platform)) && 
+        <ToggleSwitchRates activeOption={activeOption} setActiveOption={setActiveOption}/>}
         {activeOption === 'Курс' ? 
             <CourcesContainer rates={rates} setPageActiveOption={setActiveOption}/> : 
             <Calculator rates={rates} user={user} fiatSum={fiatSum} 
@@ -51,7 +52,7 @@ function RatesPage({user, rates}) {
             activeDownCurrency={activeDownCurrency} setActiveDownCurrency={setActiveDownCurrency} setInputActive={setInputActive}/>
         }
         <ExchangeSection isFixRate={activeOption === 'calc' ? true : false} dialogId={user?.dialog_id} fiatSum={fiatSum} resultSum={resultSum} finalPercent={finalPercent} finalRate={finalRate} activeUpperCurrency={activeUpperCurrency} activeDownCurrency={activeDownCurrency} rates={rates} user={user}/>
-        {!isInputActive && 
+        {(!isInputActive && ['android', 'ios'].includes(window.Telegram.WebApp.platform)) && 
             <Fragment>
                 <Breakline/>
                 <Footer/>
