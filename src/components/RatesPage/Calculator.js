@@ -128,13 +128,13 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         }
         const defaults = {
             RUB: 10000,
-            USDT: 1,
+            USDT: 100,
             THB: 3000,
             VND: 2715000,
-            USD: 1,
-            EUR: 1,
-            UAH: 1,
-            KZT: 1
+            USD: 100,
+            EUR: 100,
+            UAH: 4245,
+            KZT: 51284
         };
         return defaults[from] ?? 1;
         }, []);
