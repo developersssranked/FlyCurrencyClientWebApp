@@ -194,7 +194,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
 
         prevFiatSumRef.current = fiatSum;
         prevResultSumRef.current = String(calc.convertedAmount);
-        }, [fiatSum, activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
+        }, [fiatSum, activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
     
     useEffect(() => {
         const from = activeUpperCurrency;
@@ -262,7 +262,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         setRateRow(calc.rateDisplay);
         setIsFiatSumBelowMin(false);
         // prev*Ref уже обновлены выше
-        }, [resultSum, activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
+        }, [resultSum, activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
     
     
         // Пересчёт при смене валют
@@ -336,7 +336,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         setRateRow('');
         setFinalRate(0);
         setFinalPercent(0);
-        }, [activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
+        }, [activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
 
     const handleFiatChange = (e) => {
         let value = e.target.value;
