@@ -21,7 +21,7 @@ import additionalInfoImage from '../../img/additional_info.png'
 
 import '../../css/RatesPage/calculator.css'
 
-function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency, setInputActive}) {
+function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency, setInputActive, isInputActive}) {
 
     const upperDropdownRef = useRef(null);
     const upperDropdownTriggerRef = useRef(null);
@@ -338,8 +338,22 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         setFinalPercent(0);
         }, [activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
 
+    const handleFiatChange = (e) => {
+        let value = e.target.value;
+        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+            setFiatSum(value);
+        }
+        };
 
-    return <div className="calculator-container">
+    const handleResultChange = (e) => {
+        let value = e.target.value;
+        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+            setResultSum(value);
+        }
+        };
+
+
+    return <div className="calculator-container"style={{marginTop: isInputActive ? '0': '28px'}}>
         <div className='calculator-inputs-container'>
         <div className="calculator-upper-section">
             <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(prev => !prev)} ref={upperDropdownTriggerRef}>
@@ -360,7 +374,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Введите сумму' type="number" value={fiatSum} onChange={(e) => setFiatSum(e.target.value)} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
+                <input className='calculator-sum-input' placeholder='Введите сумму' type="number" value={fiatSum} onChange={(e) => handleFiatChange} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{fiatSum !== '' ? activeUpperCurrency : ''}</div>
                 </div>
@@ -390,7 +404,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={(e) => setResultSum(e.target.value)} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)}/>
+                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={handleResultChange} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{resultSum !== '' ? activeDownCurrency : ''}</div>
                 </div>

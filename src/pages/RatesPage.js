@@ -47,7 +47,7 @@ function RatesPage({user, rates}) {
             <Calculator rates={rates} user={user} fiatSum={fiatSum} 
             setFiatSum={setFiatSum} resultSum={resultSum} setResultSum={setResultSum} 
             finalPercent={finalPercent} setFinalPercent={setFinalPercent}
-            finalRate={finalRate} setFinalRate={setFinalRate}
+            finalRate={finalRate} setFinalRate={setFinalRate} isInputActive={isInputActive}
             activeUpperCurrency={activeUpperCurrency} setActiveUpperCurrency={setActiveUpperCurrency}
             activeDownCurrency={activeDownCurrency} setActiveDownCurrency={setActiveDownCurrency} setInputActive={setInputActive}/>
         }
