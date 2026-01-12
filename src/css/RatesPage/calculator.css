@@ -19,6 +19,11 @@
     position: relative;
 }
 
+.calculator-container.active{
+    position: fixed;
+    bottom: 0;
+}
+
 .calculator-inputs-container{
     width: calc(100% - 48px);
     margin-left: 24px;
