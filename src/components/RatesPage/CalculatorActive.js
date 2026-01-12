@@ -21,7 +21,7 @@ import additionalInfoImage from '../../img/additional_info.png'
 
 import '../../css/RatesPage/calculator.css'
 
-function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency, setInputActive, isInputActive}) {
+function CalculatorActive({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency, setInputActive, isInputActive}) {
 
     const upperDropdownRef = useRef(null);
     const upperDropdownTriggerRef = useRef(null);
@@ -353,7 +353,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         };
 
 
-    return <div className="calculator-container" style={{display: isInputActive && ['ios', 'android'].includes(window.Telegram?.WebApp?.platform) ? 'none' : 'block'}}>
+    return <div className="calculator-container-hidden" style={{display: isInputActive && ['ios', 'android'].includes(window.Telegram?.WebApp?.platform) ? 'block' : 'none'}}>
         <div className='calculator-inputs-container'>
         <div className="calculator-upper-section">
             <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(prev => !prev)} ref={upperDropdownTriggerRef}>
@@ -423,4 +423,4 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
     </div>
 };
 
-export default Calculator;
+export default CalculatorActive;
