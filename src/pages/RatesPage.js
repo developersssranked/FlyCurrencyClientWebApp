@@ -5,7 +5,6 @@ import CourcesContainer from "../components/MainPage/CourcesContainer";
 import ExchangeSection from "../components/MainPage/ExchangeSection";
 import ToggleSwitchRates from "../components/RatesPage/RatesToggleSwitch";
 import Calculator from "../components/RatesPage/Calculator";
-import CalculatorActive from "../components/RatesPage/CalculatorActive";
 import Breakline from "../components/Breakline";
 
 import { useEffect, useState, Fragment } from "react";
@@ -45,20 +44,12 @@ function RatesPage({user, rates}) {
         <ToggleSwitchRates activeOption={activeOption} setActiveOption={setActiveOption}/>}
         {activeOption === 'Курс' ? 
             <CourcesContainer rates={rates} setPageActiveOption={setActiveOption}/> : 
-            <Fragment>
-                <Calculator rates={rates} user={user} fiatSum={fiatSum} 
-                setFiatSum={setFiatSum} resultSum={resultSum} setResultSum={setResultSum} 
-                finalPercent={finalPercent} setFinalPercent={setFinalPercent}
-                finalRate={finalRate} setFinalRate={setFinalRate} isInputActive={isInputActive}
-                activeUpperCurrency={activeUpperCurrency} setActiveUpperCurrency={setActiveUpperCurrency}
-                activeDownCurrency={activeDownCurrency} setActiveDownCurrency={setActiveDownCurrency} setInputActive={setInputActive}/>
-                <CalculatorActive rates={rates} user={user} fiatSum={fiatSum} 
-                setFiatSum={setFiatSum} resultSum={resultSum} setResultSum={setResultSum} 
-                finalPercent={finalPercent} setFinalPercent={setFinalPercent}
-                finalRate={finalRate} setFinalRate={setFinalRate} isInputActive={isInputActive}
-                activeUpperCurrency={activeUpperCurrency} setActiveUpperCurrency={setActiveUpperCurrency}
-                activeDownCurrency={activeDownCurrency} setActiveDownCurrency={setActiveDownCurrency} setInputActive={setInputActive}/>
-            </Fragment>
+            <Calculator rates={rates} user={user} fiatSum={fiatSum} 
+            setFiatSum={setFiatSum} resultSum={resultSum} setResultSum={setResultSum} 
+            finalPercent={finalPercent} setFinalPercent={setFinalPercent}
+            finalRate={finalRate} setFinalRate={setFinalRate} isInputActive={isInputActive}
+            activeUpperCurrency={activeUpperCurrency} setActiveUpperCurrency={setActiveUpperCurrency}
+            activeDownCurrency={activeDownCurrency} setActiveDownCurrency={setActiveDownCurrency} setInputActive={setInputActive}/>
         }
         {(!isInputActive && ['android', 'ios'].includes(window.Telegram.WebApp.platform)) && 
             <ExchangeSection isFixRate={activeOption === 'calc' ? true : false} dialogId={user?.dialog_id} fiatSum={fiatSum} resultSum={resultSum} finalPercent={finalPercent} finalRate={finalRate} activeUpperCurrency={activeUpperCurrency} activeDownCurrency={activeDownCurrency} rates={rates} user={user}/>

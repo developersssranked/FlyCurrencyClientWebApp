@@ -20,18 +20,8 @@
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.calculator-container-hidden{
-    font-family: 'Manrope', sans-serif;
-    width: calc(100% - 64px);
-    background: 
-        linear-gradient(rgba(255, 255, 255, 0.43), rgba(255, 255, 255, 0.43)), 
-        linear-gradient(360deg, #D4E1F5 0%, #6898DB 100%);
-    border-radius: 11px;
-    box-sizing: border-box;
-    padding-top: 1px;
-    padding-bottom: 1px;
+.calculator-container.active{
     position: fixed;
-    transition: transform 0.3s ease, opacity 0.3s ease;
     bottom: 10px;
 }
 
