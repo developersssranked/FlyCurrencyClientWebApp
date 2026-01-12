@@ -21,7 +21,7 @@
 
 .calculator-container.active{
     position: fixed;
-    bottom: 0;
+    bottom: 10px;
 }
 
 .calculator-inputs-container{
