@@ -21,7 +21,8 @@
 }
 
 .calculator-container.active{
-    margin: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 
