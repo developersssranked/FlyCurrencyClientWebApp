@@ -356,52 +356,52 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
     const containerRef = useRef(null);
 
     useEffect(() => {
-    const isMobileTWA = ['ios', 'android'].includes(window.Telegram?.WebApp?.platform);
-    const el = containerRef.current;
+        const isMobileTWA = ['ios', 'android'].includes(window.Telegram?.WebApp?.platform);
+        const el = containerRef.current;
 
-    if (!el) return;
+        if (!el) return;
 
-    if (isInputActive && isMobileTWA) {
-        // 1. Сначала делаем прозрачным (мгновенно)
-        el.style.opacity = '0';
-        el.style.transition = 'opacity 0.1s ease-out';
+        if (isInputActive && isMobileTWA) {
+            // 1. Сразу делаем невидимым
+            el.style.opacity = '0';
+            el.style.visibility = 'hidden'; // гарантирует, что не занимает место визуально
 
-        // 2. Ждём завершения fade-out
-        const timeout = setTimeout(() => {
-        // 3. Теперь безопасно меняем позицию
-        el.style.position = 'fixed';
-        el.style.bottom = '20px';
-        el.style.left = '32px';
-        el.style.right = '32px';
-        el.style.margin = '0';
-        el.style.top = 'auto';
-        el.style.transform = 'translateY(12px)'; // начальная позиция для появления
+            // 2. Меняем позицию НЕМЕДЛЕННО
+            el.style.position = 'fixed';
+            el.style.bottom = '20px';
+            el.style.left = '32px';
+            el.style.right = '32px';
+            el.style.margin = '0';
+            el.style.top = 'auto';
 
-        // 4. Плавно показываем
-        requestAnimationFrame(() => {
-            el.style.opacity = '1';
+            // 3. Дважды requestAnimationFrame — ждём, пока браузер применит layout
+            requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                // Теперь безопасно показываем
+                el.style.visibility = 'visible';
+                el.style.transform = 'translateY(12px)';
+                el.style.transition = 'opacity 0.25s ease-out, transform 0.25s ease-out';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            });
+            });
+        } else {
+            // Возврат
+            el.style.opacity = '0';
+            setTimeout(() => {
+            el.style.position = '';
+            el.style.bottom = '';
+            el.style.left = '';
+            el.style.right = '';
+            el.style.margin = '';
+            el.style.top = '';
             el.style.transform = 'translateY(0)';
-            el.style.transition = 'opacity 0.25s ease-in-out, transform 0.25s ease-out';
-        });
-        }, 100); // чуть дольше, чем transition на opacity
-
-        return () => clearTimeout(timeout);
-    } else {
-        // Возврат в исходное состояние
-        el.style.opacity = '0';
-        setTimeout(() => {
-        el.style.position = '';
-        el.style.bottom = '';
-        el.style.left = '';
-        el.style.right = '';
-        el.style.margin = '';
-        el.style.top = '';
-        el.style.transform = 'translateY(0)';
-        el.style.opacity = '1';
-        el.style.transition = 'opacity 0.1s ease-out, transform 0.25s ease-out';
-        }, 10);
-    }
-    }, [isInputActive]);
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+            el.style.transition = 'opacity 0.15s ease, transform 0.25s ease';
+            }, 150);
+        }
+        }, [isInputActive]);
 
     return <div className="calculator-container" ref={containerRef}>
         <div className='calculator-inputs-container'>
