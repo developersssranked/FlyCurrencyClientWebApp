@@ -175,7 +175,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
 
         if (parsed < minAmount) {
             setResultSum('');
-            setRateRow(`Min: ${minAmount} ${from}`);
+            setRateRow(`Минимальная сумма обмена: ${minAmount} ${from}`);
             setIsFiatSumBelowMin(true);
             setFinalRate(0);
             setFinalPercent(0);
@@ -248,7 +248,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             // Сохраняем числа, но показываем ошибку
             setFiatSum(String(fiatValue)); // ← не ''
             // НЕ вызываем setResultSum — он и так = resultSum
-            setRateRow(`Min: ${minAmount} ${from}`);
+            setRateRow(`Минимальная сумма обмена: ${minAmount} ${from}`);
             setIsFiatSumBelowMin(true);
             setFinalRate(0);
             setFinalPercent(0);
