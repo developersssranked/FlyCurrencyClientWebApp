@@ -29,7 +29,7 @@ function CourcesTable({rates, activeOption, setPageActiveOption}) {
                             <CourcesRow image={usdImage} alt="usd" title="USD" courceBuy={activeOption === 'THB' ? (rates?.usd_thb * 0.98).toFixed(3) : Math.round(rates?.usd_vnd * 0.96)} courceSell={activeOption === 'THB' ? (rates?.thb_usd * 1.02).toFixed(3) : Math.round(rates?.vnd_usd * 1.04)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
                             {activeOption === 'THB' && <Fragment>
                                 <CourcesRow image={eurImage} alt="eur" title="EUR" courceBuy={(rates?.eur_thb * 0.98).toFixed(3)}  courceSell={(rates?.thb_eur * 1.02).toFixed(3)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                                <CourcesRow image={uahImage} alt="uah" title="UAH" courceBuy={(rates?.uah_thb * 1.05).toFixed(3)} courceSell={(rates?.thb_uah * 0.95).toFixed(3)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
+                                <CourcesRow image={uahImage} alt="uah" title="UAH" courceBuy={'-'} courceSell={(rates?.thb_uah * 0.95).toFixed(3)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
                                 <CourcesRow image={kztImage} alt="kzt" title="KZT" courceBuy={'-'} courceSell={(rates?.thb_kzt * 0.95).toFixed(3)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
                             </Fragment>}
                             <div className='main-page-cources-breakline'/>

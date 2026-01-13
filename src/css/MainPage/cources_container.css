@@ -24,15 +24,16 @@
 }
 
 
-.open-rates-image-container{
+.main-page-cources-grow-up-image-container{
     position: absolute;
-    top: 8px;
-    right: 8px;
     width: 13px;
     height: 13px;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
 }
 
-.open-rates-image{
+.main-page-cources-grow-up-image{
     width: 100%;
     height: 100%;
 }

@@ -1,5 +1,5 @@
 .header{
-    height: 112px;
+    height: 80px;
     width: 100%;
     position: relative;
     display: flex;
@@ -9,9 +9,9 @@
 }
 
 .logo-container{
-    width: 105px;
-    height: 105px;
-    margin-top: 18px;    
+    width: 73px;
+    height: 73px;
+    margin-top: 4px;    
 }
 
 .logo{

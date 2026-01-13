@@ -17,6 +17,12 @@
     padding-top: 1px;
     padding-bottom: 1px;
     position: relative;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.calculator-container.active{
+    position: fixed;
+    bottom: 10px;
 }
 
 .calculator-inputs-container{
@@ -69,12 +75,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-        margin-left: 12px
+    margin-left: 12px
 }
 
 .calculator-dropdown-section-arrow-image{
     width: 100%;
     height: 100%;
+    transition: transform 0.3s ease; /* Плавная анимация */
+    transform: rotate(0deg);
+}
+
+.calculator-dropdown-section-arrow-image.rotated {
+  transform: rotate(180deg); /* Переворачиваем вверх */
 }
 
 .calculator-sum-input-container{
@@ -108,7 +120,7 @@
 .calculator-sum-input::placeholder{
     font-family: 'Inter', sans-serif;
     font-weight: 400;
-    font-size: 18px;
+    font-size: 15px;
     color: #0000004D;
 }
 

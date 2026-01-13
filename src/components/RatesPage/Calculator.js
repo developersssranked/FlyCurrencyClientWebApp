@@ -1,9 +1,10 @@
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom';
 
 import CalculatorDropdown from './CalculatorDropdown'
 import { useOutsideClick } from '../../heplers/UseOutsideClick'
+import { getPercentBySum, calculateExchange } from '../../heplers/CalculatorUtils';
 
 import rubImage from '../../img/main_page_cources/rub.png'
 import usdtImage from '../../img/main_page_cources/usdt.png'
@@ -20,16 +21,20 @@ import additionalInfoImage from '../../img/additional_info.png'
 
 import '../../css/RatesPage/calculator.css'
 
-function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency}) {
-    const [searchParams] = useSearchParams();
+function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, finalPercent, setFinalPercent, finalRate, setFinalRate, activeUpperCurrency, setActiveUpperCurrency, activeDownCurrency, setActiveDownCurrency, setInputActive, isInputActive}) {
 
     const upperDropdownRef = useRef(null);
+    const upperDropdownTriggerRef = useRef(null);
+
     const downDropdownRef = useRef(null);
+    const downDropdownTriggerRef = useRef(null);
  
     const [rateRow, setRateRow] = useState('');
 
     const [isUpperDropdownVisible, setUpperDropdownVisible] = useState(false);
     const [isDownDropdownVisible, setDownDropdownVisible] = useState(false);
+
+    const [isFiatSumBelowMin, setIsFiatSumBelowMin] = useState(false);
 
 
     const defaultDropdownOptions = [
@@ -57,10 +62,6 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             title: 'EUR',
             image: eurImage
         },
-        {
-            title: 'UAH',
-            image: uahImage
-        },
     ]
 
     const currencyPairsImageDict = {
@@ -81,7 +82,6 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         'VND': ['THB', 'RUB', 'USDT'],
         'USD': ['THB', 'VND', 'USDT'],
         'EUR': ['THB',],
-        'UAH': ['THB', 'USDT'],
     }
 
     const [upperDropdownOptions, setUpperDropdownOptions] = useState(defaultDropdownOptions);
@@ -104,275 +104,267 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
 
 
     const handleArrowClick = () => {
-        if (activeDownCurrency !== 'KZT'){
+        if (activeDownCurrency !== 'KZT' && activeDownCurrency !== 'UAH'){
             setActiveUpperCurrency(activeDownCurrency);
             setActiveDownCurrency(activeUpperCurrency);
         }
     }; 
 
-    useOutsideClick(upperDropdownRef, () => {
+    useOutsideClick([upperDropdownTriggerRef, upperDropdownRef], () => {
         setUpperDropdownVisible(false);
     });
 
-    useOutsideClick(downDropdownRef, () => {
+    useOutsideClick([downDropdownTriggerRef, downDropdownRef], () => {
         setDownDropdownVisible(false);
     });
 
+
+    const prevFiatSumRef = useRef(fiatSum);
+    const prevResultSumRef = useRef(resultSum);
+
+    const getMinAmount = useCallback((from, to) => {
+        if (from === 'USDT' && to === 'USD') {
+            return 1000;
+        }
+        const defaults = {
+            RUB: 10000,
+            USDT: 100,
+            THB: 3000,
+            VND: 2715000,
+            USD: 100,
+            EUR: 100,
+            UAH: 4245,
+            KZT: 51284
+        };
+        return defaults[from] ?? 1;
+        }, []);
+
     useEffect(() => {
-        if (fiatSum === ''){
-            setResultSum('')
-            setRateRow('')
-            return
-        }
-        const parsedFiatSum = parseFloat(fiatSum);
-        if (parsedFiatSum === undefined || parsedFiatSum === '' || parsedFiatSum === NaN){
-            setResultSum('')
-            setRateRow('')
-            return
-        }
-        let percentBySum;
-        const currencyPair = `${activeUpperCurrency.toLowerCase()}_${activeDownCurrency.toLowerCase()}`
+        const from = activeUpperCurrency;
+        const to = activeDownCurrency;
 
-        if (['rub_uah', 'usdt_uah', 'usdt_usd', 'usdt_eur', 'thb_usd', 'thb_kzt', 'thb_eur', 'vnd_rub', 'vnd_thb', 'vnd_uah', 'usd_thb', 'usd_vnd', 'usd_usdt', 'eur_thb', 'eur_usdt', 'uah_thb', 'uah_usdt'].includes(currencyPair)){
-            const currencyStaticPercentMapping = {
-                'usdt_uah': 4,
-                'usdt_usd': 2,
-                'usdt_eur': 2,
-                'thb_usd': 2,
-                'thb_kzt': 4,
-                'thb_eur': 2,
-                'vnd_rub': 4,
-                'vnd_thb': 4,
-                'vnd_uah': 4,
-                'usd_thb': 2,
-                'usd_vnd': 4,
-                'usd_usdt': 2,
-                'eur_thb': 2,
-                'eur_usdt': 2,
-                'uah_thb': 4,
-                'uah_usdt': 4,
-                'rub_uah': 4
+        // 🧹 Полная очистка при пустом верхнем инпуте или некорректных условиях
+        if (fiatSum === '' || from === to || !rates) {
+            if (fiatSum === '') {
+            setResultSum('');
+            setRateRow('');
+            setFinalRate(0);
+            setFinalPercent(0);
+            setIsFiatSumBelowMin(false);
             }
-            percentBySum = currencyStaticPercentMapping[currencyPair]
-        }
-        else if (currencyPair === 'rub_thb' || currencyPair === 'thb_rub'){
-            const resultThbSum = currencyPair === 'rub_thb' ? parsedFiatSum / rates.rub_thb: parsedFiatSum;
-            if (resultThbSum <= 5000){
-                percentBySum = 6
-            }
-            else if (5000 < resultThbSum && resultThbSum <= 5500){
-                percentBySum = 5.8
-            }
-            else if (5500 < resultThbSum && resultThbSum <= 6000){
-                percentBySum = 5.6
-            }
-            else if (6000 < resultThbSum && resultThbSum <= 6500){
-                percentBySum = 5.4
-            }
-            else if (6500 < resultThbSum && resultThbSum <= 7000){
-                percentBySum = 5.2
-            }
-            else if (7000 < resultThbSum && resultThbSum <= 7500){
-                percentBySum = 5
-            }
-            else if (7500 < resultThbSum && resultThbSum <= 8000){
-                percentBySum = 4.8
-            }
-            else if (8000 < resultThbSum && resultThbSum <= 8500){
-                percentBySum = 4.6
-            }
-            else if (8500 < resultThbSum && resultThbSum <= 9000){
-                percentBySum = 4.4
-            }
-            else if (9000 < resultThbSum && resultThbSum <= 9500){
-                percentBySum = 4.2
-            }
-            else if (9500 < resultThbSum && resultThbSum <= 15000){
-                percentBySum = 3.8
-            }
-            else if (15000 < resultThbSum && resultThbSum <= 25000){
-                percentBySum = 3.6
-            }
-            else if (25000 < resultThbSum && resultThbSum <= 35000){
-                percentBySum = 3.2
-            }
-            else if (35000 < resultThbSum && resultThbSum <= 50000){
-                percentBySum = 2.8
-            }
-            else if (50000 < resultThbSum && resultThbSum <= 65000){
-                percentBySum = 2.6
-            }
-            else if (65000 < resultThbSum && resultThbSum <= 85000){
-                percentBySum = 2.4
-            }
-            else if (85000 < resultThbSum && resultThbSum <= 95000){
-                percentBySum = 2.2
-            }
-            else if (95000 < resultThbSum && resultThbSum <= 150000){
-                percentBySum = 1.9
-            }
-            else if (150000 < resultThbSum && resultThbSum <= 200000){
-                percentBySum = 1.8
-            }
-            else if (200000 < resultThbSum && resultThbSum <= 250000){
-                percentBySum = 1.7
-            }
-            else if (250000 < resultThbSum){
-                percentBySum = 1.6
-            }
-        }
-        else if (currencyPair === 'rub_vnd'){
-            const usdtSum = parsedFiatSum / rates.rub_usdt;
-            if (usdtSum <= 100){
-                percentBySum = 7
-            }
-            else if (100 < usdtSum && usdtSum <= 1000){
-                percentBySum = 4
-            }
-            else if (1000 < usdtSum && usdtSum <= 1500){
-                percentBySum = 3.5
-            }
-            else if (15000 < usdtSum && usdtSum <= 3000){
-                percentBySum = 3
-            }
-            else if (3000 < usdtSum){
-                percentBySum = 2.5
-            }
-        }
-        else if (currencyPair === 'rub_usdt'){
-            if (parsedFiatSum <= 10000){
-                percentBySum = 3
-            }
-            else if (10000 < parsedFiatSum && parsedFiatSum <= 150000){
-                percentBySum = 2.5
-            }
-            else if (150000 < parsedFiatSum){
-                percentBySum = 2
-            }
-        }
-        else if (currencyPair === 'usdt_thb') {
-            const resultThbSum = parsedFiatSum * rates.usdt_thb;
-            if (resultThbSum <= 5000){
-                percentBySum = 5
-            }
-            else if (5000 < resultThbSum && resultThbSum <= 100000){
-                percentBySum = 3
-            }
-            else if (100000 < resultThbSum){
-                percentBySum = 2
-            }
-        }
-        else if (currencyPair === 'usdt_vnd'){
-            const usdtSum = parsedFiatSum;
-            if (usdtSum <= 100){
-                percentBySum = 7
-            }
-            else if (100 < usdtSum && usdtSum <= 1000){
-                percentBySum = 4
-            }
-            else if (1000 < usdtSum && usdtSum <= 1500){
-                percentBySum = 3.5
-            }
-            else if (15000 < usdtSum && usdtSum <= 3000){
-                percentBySum = 3
-            }
-            else if (3000 < usdtSum){
-                percentBySum = 2.5
-            }
-        }
-        else if (currencyPair === 'usdt_rub'){
-            const rubSum = parsedFiatSum * rates.usdt_rub;
-            if (rubSum <= 10000){
-                percentBySum = 3
-            }
-            else if (10000 < rubSum && rubSum <= 40000){
-                percentBySum = 2.5
-            }
-            else if (40000 < rubSum && rubSum <= 150000){
-                percentBySum = 2
-            }
-            else if (150000 < rubSum && rubSum <= 500000){
-                percentBySum = 1.5
-            }
-            else if (500000 < rubSum){
-                percentBySum = 1
-            }
-        }
-        else if (currencyPair === 'thb_usdt'){
-            const usdtSum = parsedFiatSum / rates.thb_usdt;
-            if (usdtSum <= 100){
-                percentBySum = 5
-            }
-            else if (100 < usdtSum && usdtSum <= 1000){
-                percentBySum = 4
-            }
-            else if (1000 < usdtSum && usdtSum <= 2000){
-                percentBySum = 3
-            } 
-            else if (2000 < usdtSum && usdtSum <= 4000){
-                percentBySum = 2
-            }
-            else if (4000 < usdtSum){
-                percentBySum = 1.8
-            }
-        }
-        else if (currencyPair === 'vnd_usdt'){
-            const usdtSum = parsedFiatSum / rates.vnd_usdt;
-            if (usdtSum <= 100){
-                percentBySum = 5
-            }
-            else if (100 < usdtSum && usdtSum <= 1000){
-                percentBySum = 4
-            }
-            else if (1000 < usdtSum && usdtSum <= 2000){
-                percentBySum = 3
-            } 
-            else if (2000 < usdtSum && usdtSum <= 4000){
-                percentBySum = 2
-            }
-            else if (4000 < usdtSum){
-                percentBySum = 1.8
-            }
+            prevFiatSumRef.current = fiatSum;
+            prevResultSumRef.current = '';
+            return;
         }
 
-        const userLoyaltyMapping = {
-            0: 0,
-            1: 0.2,
-            2: 0.5,
-            3: 0.75
+        // 🛑 Защита от зацикливания: если значение не изменилось — выходим
+        if (fiatSum === prevFiatSumRef.current) {
+            return;
         }
 
-        const resultPercent = percentBySum - userLoyaltyMapping[user.loyalty]
-        setFinalPercent(resultPercent)
-        if (['rub_thb', 'thb_usdt', 'thb_usd', 'thb_eur', 'uah_thb', 'vnd_rub', 'vnd_usdt', 'vnd_usd', 'rub_usdt', 'rub_uah', 'usdt_eur', 'vnd_thb', 'usd_usdt', 'uah_usdt'].includes(currencyPair)){
-            const resultRate = Number((rates[currencyPair] * (1 + resultPercent / 100)).toFixed(3))
-            setFinalRate(resultRate);
-            const finalSum = Math.round(parsedFiatSum / resultRate)
-            setResultSum(finalSum);
-            setRateRow(`Курс ${resultRate} ${activeUpperCurrency} = 1 ${activeDownCurrency}`)
-        }
-        else {
-            const resultRate = Number((rates[currencyPair] * (1 - resultPercent / 100)).toFixed(3))
-            setFinalRate(resultRate)
-            const finalSum = Math.round(parsedFiatSum * resultRate)
-            setResultSum(finalSum);
-            setRateRow(`Курс 1 ${activeUpperCurrency} = ${resultRate} ${activeDownCurrency}`)
+        const parsed = parseFloat(fiatSum);
+        if (isNaN(parsed) || parsed <= 0) {
+            setResultSum('');
+            setRateRow('');
+            setIsFiatSumBelowMin(false);
+            prevFiatSumRef.current = fiatSum;
+            return;
         }
 
-        
+        const minAmount = getMinAmount(from, to);
 
-    }, [activeUpperCurrency, activeDownCurrency, fiatSum])
+        if (parsed < minAmount) {
+            setResultSum('');
+            setRateRow(`Min: ${minAmount} ${from}`);
+            setIsFiatSumBelowMin(true);
+            setFinalRate(0);
+            setFinalPercent(0);
+            prevFiatSumRef.current = fiatSum; // ✅ обновляем ref — иначе следующее изменение не сработает
+            return;
+        }
 
-    return <div className="calculator-container">
+        // ✅ Расчёт
+        const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'from' });
+
+        setResultSum(String(calc.convertedAmount));
+        setFinalRate(calc.finalRate);
+        setFinalPercent(calc.finalPercent);
+        setRateRow(calc.rateDisplay);
+        setIsFiatSumBelowMin(false);
+
+        prevFiatSumRef.current = fiatSum;
+        prevResultSumRef.current = String(calc.convertedAmount);
+        }, [fiatSum, activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
+    
+    useEffect(() => {
+        const from = activeUpperCurrency;
+        const to = activeDownCurrency;
+
+        if (resultSum === '' || from === to || !rates) {
+            if (resultSum === '') {
+            setFiatSum('');
+            setRateRow('');
+            setFinalRate(0);
+            setFinalPercent(0);
+            setIsFiatSumBelowMin(false);
+            }
+            prevResultSumRef.current = resultSum;
+            prevFiatSumRef.current = '';
+            return;
+        }
+
+        // 🛑 Защита от зацикливания: выход, если значение не менялось
+        if (resultSum === prevResultSumRef.current) {
+            return;
+        }
+
+        const parsed = parseFloat(resultSum);
+        if (isNaN(parsed) || parsed <= 0) {
+            setFiatSum('');
+            setRateRow('');
+            setIsFiatSumBelowMin(false);
+            prevResultSumRef.current = resultSum; // ✅ обновляем ref
+            return;
+        }
+
+        // 🔁 Пробуем расчёт
+        const calc = calculateExchange({
+            amount: parsed,
+            from,
+            to,
+            rates,
+            user,
+            direction: 'to'
+        });
+
+        const fiatValue = calc.convertedAmount;
+        const minAmount = getMinAmount(from, to);
+
+        // ✅ Главное: ОБНОВЛЯЕМ ССЫЛКИ ДО ЛЮБОГО return
+        prevResultSumRef.current = resultSum;
+        prevFiatSumRef.current = String(fiatValue); // ← синхронизируем ДО проверки
+
+        if (fiatValue < minAmount) {
+            // Сохраняем числа, но показываем ошибку
+            setFiatSum(String(fiatValue)); // ← не ''
+            // НЕ вызываем setResultSum — он и так = resultSum
+            setRateRow(`Min: ${minAmount} ${from}`);
+            setIsFiatSumBelowMin(true);
+            setFinalRate(0);
+            setFinalPercent(0);
+            return;
+        }
+
+        // ✅ Всё ок
+        setFiatSum(String(fiatValue));
+        setFinalRate(calc.finalRate);
+        setFinalPercent(calc.finalPercent);
+        setRateRow(calc.rateDisplay);
+        setIsFiatSumBelowMin(false);
+        // prev*Ref уже обновлены выше
+        }, [resultSum, activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
+    
+    
+        // Пересчёт при смене валют
+    useEffect(() => {
+        const from = activeUpperCurrency;
+        const to = activeDownCurrency;
+
+        // Защита: нельзя конвертировать в ту же валюту или без курсов
+        if (from === to || !rates) {
+            setFiatSum('');
+            setResultSum('');
+            setRateRow('');
+            setFinalRate(0);
+            setFinalPercent(0);
+            return;
+        }
+
+        // 1️⃣ Если есть значение в верхнем инпуте — пересчитываем вниз
+        if (fiatSum !== '') {
+            const parsed = parseFloat(fiatSum);
+            if (!isNaN(parsed) && parsed > 0) {
+            // Проверим минимум для верхней валюты
+            const minAmount = getMinAmount(from, to)
+            if (parsed >= minAmount) {
+                const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'from' });
+                setResultSum(String(calc.convertedAmount));
+                setFinalRate(calc.finalRate);
+                setFinalPercent(calc.finalPercent);
+                setRateRow(calc.rateDisplay);
+            } else {
+                // Сумма меньше минимума → сбрасываем нижний инпут
+                setResultSum('');
+                setRateRow('');
+                setFinalRate(0);
+                setFinalPercent(0);
+            }
+            } else {
+            setResultSum('');
+            setRateRow('');
+            }
+            return;
+        }
+
+        // 2️⃣ Если верхний пуст, но есть значение в нижнем — пересчитываем вверх
+        if (resultSum !== '') {
+            const parsed = parseFloat(resultSum);
+            if (!isNaN(parsed) && parsed > 0) {
+            // Проверим минимум для нижней валюты
+            const minAmount = getMinAmount(from, to)
+            if (parsed >= minAmount) {
+                const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'to' });
+                setFiatSum(String(calc.convertedAmount));
+                setFinalRate(calc.finalRate);
+                setFinalPercent(calc.finalPercent);
+                setRateRow(calc.rateDisplay);
+            } else {
+                // Сумма меньше минимума → сбрасываем верхний инпут
+                setFiatSum('');
+                setRateRow('');
+                setFinalRate(0);
+                setFinalPercent(0);
+            }
+            } else {
+            setFiatSum('');
+            setRateRow('');
+            }
+            return;
+        }
+
+        // 3️⃣ Если оба пусты — просто очищаем мета-поля
+        setRateRow('');
+        setFinalRate(0);
+        setFinalPercent(0);
+        }, [activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
+
+    const handleFiatChange = (e) => {
+        let value = e.target.value;
+        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+            setFiatSum(value);
+        }
+        };
+
+    const handleResultChange = (e) => {
+        let value = e.target.value;
+        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+            setResultSum(value);
+        }
+        };
+
+
+    return <div className={isInputActive && ['ios', 'android'].includes(window.Telegram?.WebApp?.platform) ? "calculator-container active" : "calculator-container"}>
         <div className='calculator-inputs-container'>
         <div className="calculator-upper-section">
-            <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(!isUpperDropdownVisible)}>
+            <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(prev => !prev)} ref={upperDropdownTriggerRef}>
                 <div className="calculator-dropdown-section-currency-image-container">
                     <img className="calculator-dropdown-section-currency-image" src={currencyPairsImageDict[activeUpperCurrency]} alt={activeUpperCurrency}/>
                 </div>
                 <div className='calculator-dropdown-section-active-currency-title'>{activeUpperCurrency}</div>
                 <div className='calculator-dropdown-section-arrow-image-container'>
-                    <img className='calculator-dropdown-section-arrow-image' src={arrowImage} alt='arrow'/>
+                    <img className={`calculator-dropdown-section-arrow-image ${
+                    isUpperDropdownVisible ? 'rotated' : ''
+                    }`} src={arrowImage} alt='arrow'/>
                 </div>
                 {isUpperDropdownVisible && <CalculatorDropdown 
                                             ref={upperDropdownRef}
@@ -382,7 +374,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Введите сумму' type="number" value={fiatSum} onChange={(e) => setFiatSum(e.target.value)}/>
+                <input className='calculator-sum-input' placeholder='Введите сумму' value={fiatSum} onChange={handleFiatChange} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{fiatSum !== '' ? activeUpperCurrency : ''}</div>
                 </div>
@@ -394,13 +386,15 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             </div>
         </div>
         <div className="calculator-upper-section">
-            <div className="calculator-dropdown-section" onClick={() => setDownDropdownVisible(!isDownDropdownVisible)}>
+            <div className="calculator-dropdown-section" onClick={() => setDownDropdownVisible(prev => !prev)} ref={downDropdownTriggerRef}>
                 <div className="calculator-dropdown-section-currency-image-container">
-                    <img className="calculator-dropdown-section-currency-image" src={currencyPairsImageDict[activeDownCurrency]} alt={activeDownCurrency}/>
+                    <img className="calculator-dropdown-section-currency-image" src={currencyPairsImageDict[activeDownCurrency]} alt={activeDownCurrency} />
                 </div>
                 <div className='calculator-dropdown-section-active-currency-title'>{activeDownCurrency}</div>
                 <div className='calculator-dropdown-section-arrow-image-container'>
-                    <img className='calculator-dropdown-section-arrow-image' src={arrowImage} alt='arrow'/>
+                    <img className={`calculator-dropdown-section-arrow-image ${
+                        isDownDropdownVisible ? 'rotated' : ''
+                    }`} src={arrowImage} alt='arrow'/>
                 </div>
                 {isDownDropdownVisible && <CalculatorDropdown 
                                             ref={downDropdownRef}
@@ -410,14 +404,14 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Сумма к получению' disabled value={resultSum} style={{color: "#000000"}}/>
+                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={handleResultChange} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{resultSum !== '' ? activeDownCurrency : ''}</div>
                 </div>
             </div>
         </div>
         <div className='calculator-cource-row-container'>
-            <div className='calculator-cource-row'>{rateRow}</div>
+            <div className='calculator-cource-row' style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}>{rateRow}</div>
         </div>
         <div className='calculator-additional-info-container'>
             <div className='calculator-additional-info-image-container'>
