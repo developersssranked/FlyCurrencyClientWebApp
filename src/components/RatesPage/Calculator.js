@@ -354,24 +354,36 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
     
     
     const calculatorRef = useRef(null);
-    const [isCalculatorPinned, setIsCalculatorPinned] = useState(false);
+    const isFocusedInsideRef = useRef(false);
 
-    const handleInputFocus = () => {
+    const handleFocus = () => {
         setInputActive(true);
-        
-        if (!isCalculatorPinned && ['ios', 'android'].includes(window.Telegram?.WebApp?.platform)) {
-            setIsCalculatorPinned(true);
+
+        // Если до этого фокуса не было — значит, пользователь только вошёл в калькулятор
+        if (!isFocusedInsideRef.current) {
+            isFocusedInsideRef.current = true;
+
+            // Выполняем логику ТОЛЬКО при первом входе
+            if (['ios', 'android'].includes(window.Telegram?.WebApp?.platform)) {
             document.body.style.paddingBottom = '250px';
             
-            // Только если не в зоне видимости
-            if (calculatorRef.current) {
-            const rect = calculatorRef.current.getBoundingClientRect();
-            const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
-            if (!isVisible) {
-                calculatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            // Опционально: скроллим, если не видно
+            calculatorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
+        };
+
+    const handleBlur = () => {
+        // Проверим: ушёл ли фокус за пределы ВСЕГО калькулятора?
+        // Используем таймаут, чтобы дать новому инпуту "поймать" фокус
+        setTimeout(() => {
+            if (!calculatorRef.current?.contains(document.activeElement)) {
+            // Фокус вне калькулятора → сбрасываем
+            isFocusedInsideRef.current = false;
+            setInputActive(false);
+            document.body.style.paddingBottom = '';
+            }
+        }, 50); // небольшая задержка для переключения между инпутами
         };
         
     
@@ -397,7 +409,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Введите сумму' value={fiatSum} onChange={handleFiatChange} onFocus={handleInputFocus} onBlur={() => setInputActive(false)} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
+                <input className='calculator-sum-input' placeholder='Введите сумму' value={fiatSum} onChange={handleFiatChange} onFocus={handleFocus} onBlur={handleBlur} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{fiatSum !== '' ? activeUpperCurrency : ''}</div>
                 </div>
@@ -427,7 +439,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={handleResultChange} onFocus={handleInputFocus} onBlur={() => setInputActive(false)}/>
+                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={handleResultChange} onFocus={handleFocus} onBlur={handleBlur}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{resultSum !== '' ? activeDownCurrency : ''}</div>
                 </div>
