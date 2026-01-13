@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { getUTCPlus7DateFormatted } from '../../heplers/Utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import growUpImage from '../../img/grow_up_calc.png'
+import openRatesImage from '../../img/grow_up_calc.png'
 
 
 function CourcesContainer({rates, setPageActiveOption}) {
