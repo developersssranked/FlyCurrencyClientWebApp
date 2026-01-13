@@ -19,19 +19,6 @@
   transform: translateY(0);
 }
 
-@keyframes calculatorFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-}
-
-
 .calculator-inputs-container{
     width: calc(100% - 48px);
     margin-left: 24px;
