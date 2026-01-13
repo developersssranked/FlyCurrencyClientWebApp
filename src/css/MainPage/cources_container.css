@@ -23,3 +23,16 @@
     line-height: 20px;
 }
 
+
+.open-rates-image-container{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 13px;
+    height: 13px;
+}
+
+.open-rates-image{
+    width: 100%;
+    height: 100%;
+}
