@@ -54,7 +54,7 @@ function RatesPage({user, rates}) {
         {(!isInputActive || !(['android', 'ios'].includes(window.Telegram.WebApp.platform))) && 
             <ExchangeSection isFixRate={activeOption === 'calc' ? true : false} dialogId={user?.dialog_id} fiatSum={fiatSum} resultSum={resultSum} finalPercent={finalPercent} finalRate={finalRate} activeUpperCurrency={activeUpperCurrency} activeDownCurrency={activeDownCurrency} rates={rates} user={user}/>
         }
-        {(!isInputActive && !(['android', 'ios'].includes(window.Telegram.WebApp.platform))) && 
+        {(!isInputActive || !(['android', 'ios'].includes(window.Telegram.WebApp.platform))) && 
             <Fragment>
                 <Breakline/>
                 <Footer/>
