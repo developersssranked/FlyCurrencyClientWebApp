@@ -4,39 +4,34 @@
     align-items: center;
 }
 
-.calculator-container{
-    font-family: 'Manrope', sans-serif;
-    width: calc(100% - 64px);
-    background: 
-        linear-gradient(rgba(255, 255, 255, 0.43), rgba(255, 255, 255, 0.43)), 
-        linear-gradient(360deg, #D4E1F5 0%, #6898DB 100%);
-    border-radius: 11px;
-    margin-top: 28px;
-    position: relative;
-    box-sizing: border-box;
-    padding-top: 1px;
-    padding-bottom: 1px;
-    position: relative;
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+.calculator-container {
+  font-family: 'Manrope', sans-serif;
+  width: calc(100% - 64px);
+  background: 
+    linear-gradient(rgba(255, 255, 255, 0.43), rgba(255, 255, 255, 0.43)), 
+    linear-gradient(360deg, #D4E1F5 0%, #6898DB 100%);
+  border-radius: 11px;
+  margin-top: 28px;
+  position: relative;
+  box-sizing: border-box;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .calculator-container.active {
   position: fixed;
   bottom: 10px;
+  left: 32px;
+  right: 32px;
   top: auto;
   margin: 0;
   opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.4s forwards;
+  transform: translateY(10px);
+  animation: calculatorSlideIn 0.3s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
+@keyframes calculatorSlideIn {
   to {
     opacity: 1;
     transform: translateY(0);
