@@ -15,15 +15,14 @@
   position: relative;
   box-sizing: border-box;
   padding: 1px 0;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform: translateY(0);
+  transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); /* более плавная и "живая" кривая */
+  will-change: transform;
 }
 
-/* Только transform — никакого position: fixed! */
 .calculator-container.active {
-  transform: translateY(calc(100vh - var(--calculator-height, 320px) - 20px));
+  transform: translateY(calc(100vh - 320px - 20px));
 }
-
 
 .calculator-inputs-container{
     width: calc(100% - 48px);
