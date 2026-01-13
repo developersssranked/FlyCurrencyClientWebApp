@@ -22,26 +22,160 @@ function CourcesTable({rates, activeOption, setPageActiveOption}) {
                     </div>
                 </div>
                 <div className='main-page-cources-breakline'/>
-                    {pathname === '/rates' ? 
+                    {pathname === '/rates' ? (
                         <Fragment>
-                            <CourcesRow image={rubImage} alt="rub" title="RUB" courceBuy={activeOption === 'THB' ? (rates?.rub_thb * 1.04).toFixed(3) : Math.round(rates?.rub_vnd * 0.96)} courceSell={activeOption === 'THB' ? (rates?.thb_rub * 0.96).toFixed(3) : Math.round(rates?.vnd_rub * 1.04)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                            <CourcesRow image={usdtImage} alt="usdt" title="USDT" courceBuy={activeOption === 'THB' ? (rates?.usdt_thb * 0.97).toFixed(3) : Math.round(rates?.usdt_vnd * 0.96)} courceSell={activeOption === 'THB' ? (rates?.thb_usdt * 1.03).toFixed(3) : Math.round(rates?.vnd_usdt * 1.04)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                            <CourcesRow image={usdImage} alt="usd" title="USD" courceBuy={activeOption === 'THB' ? (rates?.usd_thb * 0.98).toFixed(3) : Math.round(rates?.usd_vnd * 0.96)} courceSell={activeOption === 'THB' ? (rates?.thb_usd * 1.02).toFixed(3) : Math.round(rates?.vnd_usd * 1.04)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                            {activeOption === 'THB' && <Fragment>
-                                <CourcesRow image={eurImage} alt="eur" title="EUR" courceBuy={(rates?.eur_thb * 0.98).toFixed(3)}  courceSell={(rates?.thb_eur * 1.02).toFixed(3)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                                <CourcesRow image={uahImage} alt="uah" title="UAH" courceBuy={'-'} courceSell={(rates?.thb_uah * 0.95).toFixed(3)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                                <CourcesRow image={kztImage} alt="kzt" title="KZT" courceBuy={'-'} courceSell={(rates?.thb_kzt * 0.95).toFixed(3)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                            </Fragment>}
-                            <div className='main-page-cources-breakline'/>
-                        </Fragment> : 
+                            <CourcesRow
+                            image={rubImage}
+                            alt="rub"
+                            title="RUB"
+                            courceBuy={
+                                activeOption === 'THB'
+                                ? rates?.rub_thb != null ? (rates.rub_thb * 1.04).toFixed(3) : ''
+                                : rates?.rub_vnd != null ? Math.round(rates.rub_vnd * 0.96) : ''
+                            }
+                            courceSell={
+                                activeOption === 'THB'
+                                ? rates?.thb_rub != null ? (rates.thb_rub * 0.96).toFixed(3) : ''
+                                : rates?.vnd_rub != null ? Math.round(rates.vnd_rub * 1.04) : ''
+                            }
+                            activeOption={activeOption}
+                            setPageActiveOption={setPageActiveOption}
+                            />
+                            <CourcesRow
+                            image={usdtImage}
+                            alt="usdt"
+                            title="USDT"
+                            courceBuy={
+                                activeOption === 'THB'
+                                ? rates?.usdt_thb != null ? (rates.usdt_thb * 0.97).toFixed(3) : ''
+                                : rates?.usdt_vnd != null ? Math.round(rates.usdt_vnd * 0.96) : ''
+                            }
+                            courceSell={
+                                activeOption === 'THB'
+                                ? rates?.thb_usdt != null ? (rates.thb_usdt * 1.03).toFixed(3) : ''
+                                : rates?.vnd_usdt != null ? Math.round(rates.vnd_usdt * 1.04) : ''
+                            }
+                            activeOption={activeOption}
+                            setPageActiveOption={setPageActiveOption}
+                            />
+                            <CourcesRow
+                            image={usdImage}
+                            alt="usd"
+                            title="USD"
+                            courceBuy={
+                                activeOption === 'THB'
+                                ? rates?.usd_thb != null ? (rates.usd_thb * 0.98).toFixed(3) : ''
+                                : rates?.usd_vnd != null ? Math.round(rates.usd_vnd * 0.96) : ''
+                            }
+                            courceSell={
+                                activeOption === 'THB'
+                                ? rates?.thb_usd != null ? (rates.thb_usd * 1.02).toFixed(3) : ''
+                                : rates?.vnd_usd != null ? Math.round(rates.vnd_usd * 1.04) : ''
+                            }
+                            activeOption={activeOption}
+                            setPageActiveOption={setPageActiveOption}
+                            />
+                            {activeOption === 'THB' && (
+                            <Fragment>
+                                <CourcesRow
+                                image={eurImage}
+                                alt="eur"
+                                title="EUR"
+                                courceBuy={rates?.eur_thb != null ? (rates.eur_thb * 0.98).toFixed(3) : ''}
+                                courceSell={rates?.thb_eur != null ? (rates.thb_eur * 1.02).toFixed(3) : ''}
+                                activeOption={activeOption}
+                                setPageActiveOption={setPageActiveOption}
+                                />
+                                <CourcesRow
+                                image={uahImage}
+                                alt="uah"
+                                title="UAH"
+                                courceBuy="-"
+                                courceSell={rates?.thb_uah != null ? (rates.thb_uah * 0.95).toFixed(3) : ''}
+                                activeOption={activeOption}
+                                setPageActiveOption={setPageActiveOption}
+                                />
+                                <CourcesRow
+                                image={kztImage}
+                                alt="kzt"
+                                title="KZT"
+                                courceBuy="-"
+                                courceSell={rates?.thb_kzt != null ? (rates.thb_kzt * 0.95).toFixed(3) : ''}
+                                activeOption={activeOption}
+                                setPageActiveOption={setPageActiveOption}
+                                />
+                            </Fragment>
+                            )}
+                            <div className="main-page-cources-breakline" />
+                        </Fragment>
+                        ) : (
                         <Fragment>
-                            <CourcesRow image={rubImage} alt="rub" title="RUB" courceBuy={activeOption === 'THB' ? (rates?.rub_thb * 1.04).toFixed(3) : Math.round(rates?.rub_vnd * 0.96)} courceSell={activeOption === 'THB' ? (rates?.thb_rub * 0.96).toFixed(3) : Math.round(rates?.vnd_rub * 1.04)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                            <CourcesRow image={usdtImage} alt="usdt" title="USDT" courceBuy={activeOption === 'THB' ? (rates?.usdt_thb * 0.97).toFixed(3) : Math.round(rates?.usdt_vnd * 0.96)} courceSell={activeOption === 'THB' ? (rates?.thb_usdt * 1.03).toFixed(3) : Math.round(rates?.vnd_usdt * 1.04)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                            <CourcesRow image={usdImage} alt="usd" title="USD" courceBuy={activeOption === 'THB' ? (rates?.usd_thb * 0.98).toFixed(3) : Math.round(rates?.usd_vnd * 0.96)} courceSell={activeOption === 'THB' ? (rates?.thb_usd * 1.02).toFixed(3) : Math.round(rates?.vnd_usd * 1.04)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                            {activeOption === 'THB' && <Fragment>
-                                <CourcesRow image={eurImage} alt="eur" title="EUR" courceBuy={(rates?.eur_thb * 0.98).toFixed(3)}  courceSell={(rates?.thb_eur * 1.02).toFixed(3)} activeOption={activeOption} setPageActiveOption={setPageActiveOption}/>
-                            </Fragment>}
-                        </Fragment>}
+                            <CourcesRow
+                            image={rubImage}
+                            alt="rub"
+                            title="RUB"
+                            courceBuy={
+                                activeOption === 'THB'
+                                ? rates?.rub_thb != null ? (rates.rub_thb * 1.04).toFixed(3) : ''
+                                : rates?.rub_vnd != null ? Math.round(rates.rub_vnd * 0.96) : ''
+                            }
+                            courceSell={
+                                activeOption === 'THB'
+                                ? rates?.thb_rub != null ? (rates.thb_rub * 0.96).toFixed(3) : ''
+                                : rates?.vnd_rub != null ? Math.round(rates.vnd_rub * 1.04) : ''
+                            }
+                            activeOption={activeOption}
+                            setPageActiveOption={setPageActiveOption}
+                            />
+                            <CourcesRow
+                            image={usdtImage}
+                            alt="usdt"
+                            title="USDT"
+                            courceBuy={
+                                activeOption === 'THB'
+                                ? rates?.usdt_thb != null ? (rates.usdt_thb * 0.97).toFixed(3) : ''
+                                : rates?.usdt_vnd != null ? Math.round(rates.usdt_vnd * 0.96) : ''
+                            }
+                            courceSell={
+                                activeOption === 'THB'
+                                ? rates?.thb_usdt != null ? (rates.thb_usdt * 1.03).toFixed(3) : ''
+                                : rates?.vnd_usdt != null ? Math.round(rates.vnd_usdt * 1.04) : ''
+                            }
+                            activeOption={activeOption}
+                            setPageActiveOption={setPageActiveOption}
+                            />
+                            <CourcesRow
+                            image={usdImage}
+                            alt="usd"
+                            title="USD"
+                            courceBuy={
+                                activeOption === 'THB'
+                                ? rates?.usd_thb != null ? (rates.usd_thb * 0.98).toFixed(3) : ''
+                                : rates?.usd_vnd != null ? Math.round(rates.usd_vnd * 0.96) : ''
+                            }
+                            courceSell={
+                                activeOption === 'THB'
+                                ? rates?.thb_usd != null ? (rates.thb_usd * 1.02).toFixed(3) : ''
+                                : rates?.vnd_usd != null ? Math.round(rates.vnd_usd * 1.04) : ''
+                            }
+                            activeOption={activeOption}
+                            setPageActiveOption={setPageActiveOption}
+                            />
+                            {activeOption === 'THB' && (
+                            <Fragment>
+                                <CourcesRow
+                                image={eurImage}
+                                alt="eur"
+                                title="EUR"
+                                courceBuy={rates?.eur_thb != null ? (rates.eur_thb * 0.98).toFixed(3) : ''}
+                                courceSell={rates?.thb_eur != null ? (rates.thb_eur * 1.02).toFixed(3) : ''}
+                                activeOption={activeOption}
+                                setPageActiveOption={setPageActiveOption}
+                                />
+                            </Fragment>
+                            )}
+                        </Fragment>
+                        )}
                     
             </div>
 };
