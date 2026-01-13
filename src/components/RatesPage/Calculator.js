@@ -385,7 +385,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         
     
 
-    return <div className="calculator-container" ref={calculatorRef}>
+    return <div className={(['ios', 'android'].includes(window.Telegram?.WebApp?.platform)) && isInputActive ? "calculator-container active" : "calculator-container"} ref={calculatorRef}>
         <div className='calculator-inputs-container'>
         <div className="calculator-upper-section">
             <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(prev => !prev)} ref={upperDropdownTriggerRef}>
