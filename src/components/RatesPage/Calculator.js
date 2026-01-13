@@ -368,22 +368,19 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             document.body.style.paddingBottom = '250px';
             
             // Опционально: скроллим, если не видно
-            calculatorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            calculatorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
         };
 
     const handleBlur = () => {
-        // Проверим: ушёл ли фокус за пределы ВСЕГО калькулятора?
-        // Используем таймаут, чтобы дать новому инпуту "поймать" фокус
         setTimeout(() => {
             if (!calculatorRef.current?.contains(document.activeElement)) {
-            // Фокус вне калькулятора → сбрасываем
             isFocusedInsideRef.current = false;
             setInputActive(false);
             document.body.style.paddingBottom = '';
             }
-        }, 50); // небольшая задержка для переключения между инпутами
+        }, 50);
         };
         
     
