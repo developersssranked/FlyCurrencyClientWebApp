@@ -352,79 +352,9 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         }
         };
 
-    // Добавьте ref
-    const containerRef = useRef(null);
-    const fiatInputRef = useRef(null);
-    const resultInputRef = useRef(null);
-    const [activeInput, setActiveInput] = useState(null); // 'fiat' или 'result'
-    const handleFiatFocus = () => {
-        setInputActive(true);
-        setActiveInput('fiat');
-        };
-
-    const handleResultFocus = () => {
-        setInputActive(true);
-        setActiveInput('result');
-        };
     
-    useEffect(() => {
-        const isMobileTWA = ['ios', 'android'].includes(window.Telegram?.WebApp?.platform);
-        const el = containerRef.current;
 
-        if (!el) return;
-
-        if (isInputActive && isMobileTWA) {
-            // Сохраняем активный инпут
-            const inputToFocus = activeInput === 'fiat' ? fiatInputRef.current : resultInputRef.current;
-
-            // Скрываем
-            el.style.opacity = '0';
-            el.style.visibility = 'hidden';
-
-            // Перемещаем
-            el.style.position = 'fixed';
-            el.style.bottom = '20px';
-            el.style.left = '32px';
-            el.style.right = '32px';
-            el.style.margin = '0';
-            el.style.top = 'auto';
-
-            // После layout — показываем и возвращаем фокус
-            requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                el.style.visibility = 'visible';
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-                el.style.transition = 'opacity 0.25s ease-out, transform 0.25s ease-out';
-
-                // 🔥 Возвращаем фокус!
-                setTimeout(() => {
-                if (inputToFocus) {
-                    inputToFocus.focus();
-                }
-                }, 50); // небольшая задержка для надёжности
-            });
-            });
-        } else {
-            // Возврат
-            el.style.opacity = '0';
-            setTimeout(() => {
-            el.style.position = '';
-            el.style.bottom = '';
-            el.style.left = '';
-            el.style.right = '';
-            el.style.margin = '';
-            el.style.top = '';
-            el.style.transform = 'translateY(0)';
-            el.style.visibility = 'visible';
-            el.style.opacity = '1';
-            el.style.transition = 'opacity 0.15s ease, transform 0.25s ease';
-            }, 150);
-        }
-        }, [isInputActive, activeInput]); // ⚠️ добавили activeInput в зависимости!
-   
-
-    return <div className="calculator-container" ref={containerRef}>
+    return <div className={isInputActive && ['ios', 'android'].includes(window.Telegram?.WebApp?.platform) ? "calculator-container active" : "calculator-container"}>
         <div className='calculator-inputs-container'>
         <div className="calculator-upper-section">
             <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(prev => !prev)} ref={upperDropdownTriggerRef}>
@@ -445,7 +375,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Введите сумму' value={fiatSum} onChange={handleFiatChange} onFocus={handleFiatFocus} onBlur={() => setInputActive(false)} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
+                <input className='calculator-sum-input' placeholder='Введите сумму' value={fiatSum} onChange={handleFiatChange} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{fiatSum !== '' ? activeUpperCurrency : ''}</div>
                 </div>
@@ -475,7 +405,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={handleResultChange} onFocus={handleResultFocus} onBlur={() => setInputActive(false)}/>
+                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={handleResultChange} onFocus={() => setInputActive(true)} onBlur={() => setInputActive(false)}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{resultSum !== '' ? activeDownCurrency : ''}</div>
                 </div>
