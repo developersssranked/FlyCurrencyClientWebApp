@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { getUTCPlus7DateFormatted } from '../../heplers/Utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import growUpImage from '../../img/grow_up_calc.png'
-import openRatesImage from '../../img/grow_up_calc.png'
 
 
 function CourcesContainer({rates, setPageActiveOption}) {
@@ -17,11 +16,6 @@ function CourcesContainer({rates, setPageActiveOption}) {
 
     return <div className="main-page-cources-container">
         <div className='main-page-cources-container-actual-text'>Актуально<br/>на {getUTCPlus7DateFormatted()}</div>
-        {pathname !== '/rates' && 
-            <div className='open-rates-image-container' onClick={() => navigate('/rates')}>
-                <img className='open-rates-image' src={openRatesImage} alt='open-rates'/>
-            </div>
-        }
         <ToggleSwitch activeOption={activeOption} setActiveOption={setActiveOption} setPageActiveOption={setPageActiveOption}/>
         {pathname === '/' &&
             <div className='main-page-cources-grow-up-image-container' onClick={() => navigate('/rates')}>
