@@ -17,13 +17,9 @@
     padding-top: 1px;
     padding-bottom: 1px;
     position: relative;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
-.calculator-container.active{
-    position: fixed;
-    bottom: 10px;
-}
 
 .calculator-inputs-container{
     width: calc(100% - 48px);
