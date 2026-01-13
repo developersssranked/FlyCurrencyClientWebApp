@@ -368,7 +368,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             document.body.style.paddingBottom = '250px';
             
             // Опционально: скроллим, если не видно
-            calculatorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            calculatorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
         };
