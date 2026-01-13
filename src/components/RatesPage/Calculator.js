@@ -351,10 +351,26 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             setResultSum(value);
         }
         };
+    
+    const calculatorRef = useRef(null)
+        
+    useEffect(() => {
+    if (isInputActive && ['ios', 'android'].includes(window.Telegram?.WebApp?.platform)) {
+        // Добавим отступ снизу, чтобы калькулятор не уезжал под клавиатуру
+        document.body.style.paddingBottom = '250px';
+        // Плавная прокрутка к калькулятору
+        calculatorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+        document.body.style.paddingBottom = '';
+    }
 
+    return () => {
+        document.body.style.paddingBottom = '';
+    };
+    }, [isInputActive]);
     
 
-    return <div className={isInputActive && ['ios', 'android'].includes(window.Telegram?.WebApp?.platform) ? "calculator-container active" : "calculator-container"}>
+    return <div className="calculator-container" ref={calculatorRef}>
         <div className='calculator-inputs-container'>
         <div className="calculator-upper-section">
             <div className="calculator-dropdown-section" onClick={() => setUpperDropdownVisible(prev => !prev)} ref={upperDropdownTriggerRef}>
