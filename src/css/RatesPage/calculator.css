@@ -15,14 +15,36 @@
   position: relative;
   box-sizing: border-box;
   padding: 1px 0;
+  opacity: 1;
   transform: translateY(0);
-  transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); /* более плавная и "живая" кривая */
-  will-change: transform;
+  transition: opacity 0.15s ease-out; /* быстрое исчезновение */
 }
 
 .calculator-container.active {
-  transform: translateY(calc(100vh - 320px - 20px));
+  position: fixed;
+  top: auto;
+  bottom: 20px;
+  left: 32px;
+  right: 32px;
+  margin: 0;
+  transform: translateY(0); /* сбрасываем трансформ */
+  opacity: 0;
+  pointer-events: none; /* блокируем клики во время анимации */
+  animation: calculatorFadeIn 0.3s ease-in-out 0.15s forwards;
 }
+
+@keyframes calculatorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
 
 .calculator-inputs-container{
     width: calc(100% - 48px);
