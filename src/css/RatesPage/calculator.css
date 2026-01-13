@@ -20,19 +20,6 @@
   transition: opacity 0.15s ease-out; /* быстрое исчезновение */
 }
 
-.calculator-container.active {
-  position: fixed;
-  top: auto;
-  bottom: 20px;
-  left: 32px;
-  right: 32px;
-  margin: 0;
-  transform: translateY(0); /* сбрасываем трансформ */
-  opacity: 0;
-  pointer-events: none; /* блокируем клики во время анимации */
-  animation: calculatorFadeIn 0.3s ease-in-out 0.15s forwards;
-}
-
 @keyframes calculatorFadeIn {
   from {
     opacity: 0;
