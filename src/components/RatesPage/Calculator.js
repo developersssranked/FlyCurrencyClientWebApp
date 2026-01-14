@@ -190,7 +190,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
 
         prevFiatSumRef.current = fiatSum;
         prevResultSumRef.current = String(resultValue);
-        }, [fiatSum, activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
+        }, [fiatSum, activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
     
     useEffect(() => {
         const from = activeUpperCurrency;
