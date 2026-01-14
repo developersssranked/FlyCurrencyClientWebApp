@@ -1,7 +1,9 @@
 import '../../css/RatesPage/toggle_switch_rates.css'
 
-const ToggleSwitchRates = ({activeOption, setActiveOption}) => {
+const ToggleSwitchRates = ({activeOption, setActiveOption, setFiatSum, setResultSum}) => {
   const handleToggle = (option) => {
+    setFiatSum('');
+    setResultSum('');
     setActiveOption(option);
   };
 

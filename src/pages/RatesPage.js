@@ -41,7 +41,7 @@ function RatesPage({user, rates}) {
     return <div className="rates-page">
         {(!isInputActive || !(['android', 'ios'].includes(window.Telegram.WebApp.platform))) && <Header/>}
         {(!isInputActive || !(['android', 'ios'].includes(window.Telegram.WebApp.platform))) && 
-        <ToggleSwitchRates activeOption={activeOption} setActiveOption={setActiveOption}/>}
+        <ToggleSwitchRates activeOption={activeOption} setActiveOption={setActiveOption} setFiatSum={setFiatSum} setResultSum={setResultSum}/>}
         {activeOption === 'Курс' ? 
             <CourcesContainer rates={rates} setPageActiveOption={setActiveOption}/> : 
             <Calculator rates={rates} user={user} fiatSum={fiatSum} 

@@ -206,4 +206,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    font-size: 16px;
+}
+
+.calculator-cource-row{
+    white-space: pre-line;
+    line-height: 18px;
 }

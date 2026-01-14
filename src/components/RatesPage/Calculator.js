@@ -143,7 +143,6 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         const from = activeUpperCurrency;
         const to = activeDownCurrency;
 
-        // 🧹 Полная очистка при пустом верхнем инпуте или некорректных условиях
         if (fiatSum === '' || from === to || !rates) {
             if (fiatSum === '') {
             setResultSum('');
@@ -157,10 +156,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             return;
         }
 
-        // 🛑 Защита от зацикливания: если значение не изменилось — выходим
-        if (fiatSum === prevFiatSumRef.current) {
-            return;
-        }
+        if (fiatSum === prevFiatSumRef.current) return;
 
         const parsed = parseFloat(fiatSum);
         if (isNaN(parsed) || parsed <= 0) {
@@ -171,30 +167,30 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             return;
         }
 
+        // 🔁 ВСЕГДА делаем расчёт
+        const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'from' });
+        const resultValue = calc.convertedAmount;
+
+        // Определяем минимум для ВЕРХНЕЙ валюты
         const minAmount = getMinAmount(from, to);
 
-        if (parsed < minAmount) {
-            setResultSum('');
-            setRateRow(`Минимальная сумма обмена: ${minAmount} ${from}`);
-            setIsFiatSumBelowMin(true);
-            setFinalRate(0);
-            setFinalPercent(0);
-            prevFiatSumRef.current = fiatSum; // ✅ обновляем ref — иначе следующее изменение не сработает
-            return;
-        }
-
-        // ✅ Расчёт
-        const calc = calculateExchange({ amount: parsed, from, to, rates, user, direction: 'from' });
-
-        setResultSum(String(calc.convertedAmount));
+        // Устанавливаем результат ВСЕГДА
+        setResultSum(String(resultValue));
         setFinalRate(calc.finalRate);
         setFinalPercent(calc.finalPercent);
-        setRateRow(calc.rateDisplay);
-        setIsFiatSumBelowMin(false);
+
+        // Но меняем отображение, если сумма меньше минимума
+        if (parsed < minAmount) {
+            setRateRow(`Минимальная сумма обмена:\n${minAmount} ${from}`);
+            setIsFiatSumBelowMin(true);
+        } else {
+            setRateRow(calc.rateDisplay);
+            setIsFiatSumBelowMin(false);
+        }
 
         prevFiatSumRef.current = fiatSum;
-        prevResultSumRef.current = String(calc.convertedAmount);
-        }, [fiatSum, activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
+        prevResultSumRef.current = String(resultValue);
+        }, [fiatSum, activeUpperCurrency, activeDownCurrency, rates, user.loyalty]);
     
     useEffect(() => {
         const from = activeUpperCurrency;
@@ -248,7 +244,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
             // Сохраняем числа, но показываем ошибку
             setFiatSum(String(fiatValue)); // ← не ''
             // НЕ вызываем setResultSum — он и так = resultSum
-            setRateRow(`Минимальная сумма обмена: ${minAmount} ${from}`);
+            setRateRow(`Минимальная сумма обмена:\n${minAmount} ${from}`);
             setIsFiatSumBelowMin(true);
             setFinalRate(0);
             setFinalPercent(0);
