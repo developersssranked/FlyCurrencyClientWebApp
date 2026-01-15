@@ -379,7 +379,26 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         }, 50);
         };
         
-    
+    const upperInputRef = useRef(null);
+    const downInputRef = useRef(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (upperInputRef.current){
+                upperInputRef.current.blur();
+            }
+            if (downInputRef.current){
+                downInputRef.current.blur()
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        // Очистка при размонтировании
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     return <div className={(['ios', 'android'].includes(window.Telegram?.WebApp?.platform)) && isInputActive ? "calculator-container active" : "calculator-container"} ref={calculatorRef}>
         <div className='calculator-inputs-container'>
@@ -402,7 +421,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Введите сумму' value={fiatSum} onChange={handleFiatChange} onFocus={handleFocus} onBlur={handleBlur} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}}/>
+                <input className='calculator-sum-input' placeholder='Введите сумму' value={fiatSum} onChange={handleFiatChange} onFocus={handleFocus} onBlur={handleBlur} style={{color: isFiatSumBelowMin ? '#D52B1E' : '#000000'}} ref={upperInputRef}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{fiatSum !== '' ? activeUpperCurrency : ''}</div>
                 </div>
@@ -432,7 +451,7 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
                                             />}
             </div>
             <div className='calculator-sum-input-container'>
-                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={handleResultChange} onFocus={handleFocus} onBlur={handleBlur}/>
+                <input className='calculator-sum-input' placeholder='Сумма к получению' value={resultSum} style={{color: "#000000"}} onChange={handleResultChange} onFocus={handleFocus} onBlur={handleBlur} ref={downInputRef}/>
                 <div className='calculator-sum-input-currency-name-container'>
                     <div className='calculator-sum-input-currency-name'>{resultSum !== '' ? activeDownCurrency : ''}</div>
                 </div>
