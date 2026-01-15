@@ -1,10 +1,10 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom';
+import useUserScroll from '../../heplers/UseUserScroll';
 
 import CalculatorDropdown from './CalculatorDropdown'
 import { useOutsideClick } from '../../heplers/UseOutsideClick'
-import { getPercentBySum, calculateExchange } from '../../heplers/CalculatorUtils';
+import { calculateExchange } from '../../heplers/CalculatorUtils';
 
 import rubImage from '../../img/main_page_cources/rub.png'
 import usdtImage from '../../img/main_page_cources/usdt.png'

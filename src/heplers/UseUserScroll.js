@@ -40,3 +40,5 @@ function useUserScroll(callback) {
     };
   }, [callback]);
 }
+
+export default useUserScroll;
