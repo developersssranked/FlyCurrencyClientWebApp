@@ -1,6 +1,5 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react'
-import useUserScroll from '../../heplers/UseUserScroll';
 
 import CalculatorDropdown from './CalculatorDropdown'
 import { useOutsideClick } from '../../heplers/UseOutsideClick'
@@ -381,15 +380,6 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         
     const upperInputRef = useRef(null);
     const downInputRef = useRef(null);
-
-    useUserScroll(() => {
-        if (upperInputRef.current && (['ios', 'android'].includes(window.Telegram?.WebApp?.platform))){
-            upperInputRef.current.blur();
-        }
-        if (downInputRef.current && (['ios', 'android'].includes(window.Telegram?.WebApp?.platform))){
-            downInputRef.current.blur()
-        }
-    });
 
     return <div className={(['ios', 'android'].includes(window.Telegram?.WebApp?.platform)) && isInputActive ? "calculator-container active" : "calculator-container"} ref={calculatorRef}>
         <div className='calculator-inputs-container'>
