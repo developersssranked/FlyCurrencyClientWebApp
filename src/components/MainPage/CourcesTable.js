@@ -86,24 +86,6 @@ function CourcesTable({rates, activeOption, setPageActiveOption}) {
                                 activeOption={activeOption}
                                 setPageActiveOption={setPageActiveOption}
                                 />
-                                <CourcesRow
-                                image={uahImage}
-                                alt="uah"
-                                title="UAH"
-                                courceBuy="-"
-                                courceSell={rates?.thb_uah != null ? (rates.thb_uah * 0.95).toFixed(3) : ''}
-                                activeOption={activeOption}
-                                setPageActiveOption={setPageActiveOption}
-                                />
-                                <CourcesRow
-                                image={kztImage}
-                                alt="kzt"
-                                title="KZT"
-                                courceBuy="-"
-                                courceSell={rates?.thb_kzt != null ? (rates.thb_kzt * 0.95).toFixed(3) : ''}
-                                activeOption={activeOption}
-                                setPageActiveOption={setPageActiveOption}
-                                />
                             </Fragment>
                             )}
                             <div className="main-page-cources-breakline" />
