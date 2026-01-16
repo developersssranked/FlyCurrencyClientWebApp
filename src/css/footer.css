@@ -28,6 +28,7 @@
     align-items: center;
     gap: 5px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .footer-item-image-container{

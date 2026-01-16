@@ -31,6 +31,7 @@
     top: 8px;
     right: 8px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .main-page-cources-grow-up-image{
