@@ -259,12 +259,6 @@ function Calculator({rates, user, fiatSum, setFiatSum, resultSum, setResultSum, 
         // prev*Ref уже обновлены выше
         }, [resultSum, activeUpperCurrency, activeDownCurrency, rates, user?.loyalty]);
     
-
-    useEffect(() => {
-        setFiatSum('');
-        setResultSum('');
-        setRateRow('');
-    }, [activeUpperCurrency, activeDownCurrency])
     
         // Пересчёт при смене валют
     useEffect(() => {
