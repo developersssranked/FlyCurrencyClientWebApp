@@ -51,6 +51,7 @@
     line-height: 100%;
     letter-spacing: 0%;
     cursor: pointer;
+     -webkit-tap-highlight-color: transparent;
 }
 
 .calculator-dropdown-section-currency-image-container{
@@ -158,11 +159,13 @@
     width: 38px;
     height: 38px;
     cursor: pointer;
+     -webkit-tap-highlight-color: transparent;
 }
 
 .calculator-arrow-image{
     width: 100%;
     height: 100%;
+    
 }
 
 .calculator-cource-row{
