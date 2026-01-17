@@ -1,4 +1,4 @@
-export const getPercentBySum = ({activeUpperCurrency, activeDownCurrency, rates, parsedFiatSum, direction}) => {
+export const getPercentBySum = ({activeUpperCurrency, activeDownCurrency, rates, parsedFiatSum, direction, ref_id}) => {
     let percentBySum;
     const currencyPair = `${activeUpperCurrency.toLowerCase()}_${activeDownCurrency.toLowerCase()}`
 
@@ -31,7 +31,10 @@ export const getPercentBySum = ({activeUpperCurrency, activeDownCurrency, rates,
         else {
             resultThbSum = currencyPair === 'rub_thb' ? parsedFiatSum : parsedFiatSum / rates.rub_thb;
         }
-        if (resultThbSum <= 5000){
+        if (ref_id === 'SawasdeeTravel' && resultThbSum <= 10000 && currencyPair === 'rub_thb'){
+            percentBySum = 6
+        }
+        else if (resultThbSum <= 5000){
             percentBySum = 6
         }
         else if (5000 < resultThbSum && resultThbSum <= 5500){
@@ -145,7 +148,10 @@ export const getPercentBySum = ({activeUpperCurrency, activeDownCurrency, rates,
         else {
             resultThbSum = parsedFiatSum;
         }
-        if (resultThbSum <= 5000){
+        if (ref_id === 'SawasdeeTravel' && resultThbSum <= 10000){
+            percentBySum = 6
+        }
+        else if (resultThbSum <= 5000){
             percentBySum = 6
         }
         else if (5000 < resultThbSum && resultThbSum <= 5500){
@@ -346,7 +352,9 @@ export const calculateExchange = ({
     activeDownCurrency: to, 
     rates, 
     parsedFiatSum: amount, 
-    direction});
+    direction,
+    ref_id: user?.ref_id
+});
 
   // 2️⃣ Примени лояльность
   const userLoyaltyMapping = { 0: 0, 1: 0.2, 2: 0.5, 3: 0.75 };
